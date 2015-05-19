@@ -1,10 +1,10 @@
 #!/usr/bin/env python
 
-# Copyright 2014-2015 Boxkite Inc.
+# Copyright 2015 Boxkite Inc.
 
-# This file is part of the DataCats package and is released under
-# the terms of the GNU Affero General Public License version 3.0.
-# See LICENSE.txt or http://www.fsf.org/licensing/licenses/agpl-3.0.html
+# This file is part of the ckan-multisite package and is released
+# under the terms of the MIT License.
+# See LICENSE or http://opensource.org/licenses/MIT
 
 from setuptools import setup
 import sys
@@ -35,4 +35,3 @@ setup(
         ckan-multisite=ckan_multisite.multisite:main
         """,
     )
-
