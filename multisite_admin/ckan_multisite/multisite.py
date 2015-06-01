@@ -64,12 +64,12 @@ def env_must_exist(func):
     return _check
 
 
-def datacats_api_command(require_valid_child=False, *keys):
+def datacats_api_command(require_valid_site=False, *keys):
     """
     Wraps a function with safety measures to report a DatacatsError
     back in a 409 response.
 
-    :param requires_valid_child True if an endpoint requires a child to exist
+    :param requires_valid_site  True if an endpoint requires a site to exist
                                 for it to be able to work.
     :param keys                 List of arguments that are required for this
                                 environment shouldn't operate.
@@ -80,15 +80,15 @@ def datacats_api_command(require_valid_child=False, *keys):
         @env_must_exist
         def wrapper():
             if 'name' not in request.form:
-                child_name = None
+                site_name = None
             else:
-                child_name = request.form.get('name')
+                site_name = request.form.get('name')
 
             try:
-                environment = Environment.load(MAIN_ENV_NAME, child_name)
+                environment = Environment.load(MAIN_ENV_NAME, site_name)
 
-                if require_valid_child:
-                    environment.require_valid_child()
+                if require_valid_site:
+                    environment.require_valid_site()
 
                 return func(environment)
             except DatacatsError as e:
@@ -100,7 +100,7 @@ def datacats_api_command(require_valid_child=False, *keys):
 
 @app.route('/api/create', methods=['POST'])
 @datacats_api_command(False, 'name')
-def make_child(environment):
+def make_site(environment):
     environment.create_directories(create_project_dir=False)
     environment.start_postgres_and_solr()
     environment.fix_storage_permissions()
@@ -108,56 +108,61 @@ def make_child(environment):
     environment.ckan_db_init()
     environment.start_web()
 
-    return jsonify({'success': 'Child environment {} created.'
-                    .format(environment.child_name)})
+    return jsonify({'success': 'Multisite environment {} created.'
+                    .format(environment.site_name)})
 
 
 @app.route('/api/start', methods=['POST'])
 @datacats_api_command(True, 'name')
-def start_child(environment):
+def start_site(environment):
     environment.start_postgres_and_solr()
     environment.start_web()
 
-    return jsonify({'success': 'Child environment {} started.'
-                    .format(environment.child_name)})
+    return jsonify({'success': 'Multisite environment {} started.'
+                    .format(environment.site_name)})
 
 
 
 @app.route('/api/purge', methods=['POST'])
 @datacats_api_command(True, 'name')
-def purge_child(environment):
+def purge_site(environment):
     environment.stop_web()
     environment.stop_postgres_and_solr()
-    environment.purge_data([environment.child_name], never_delete=True)
+    environment.purge_data([environment.site_name], never_delete=True)
 
-    return jsonify({'success': 'Child environment {} purged.'
-                    .format(environment.child_name)})
+    return jsonify({'success': 'Multisite environment {} purged.'
+                    .format(environment.site_name)})
 
 
 @app.route('/api/stop', methods=['POST'])
 @datacats_api_command(True, 'name')
-def stop_child(environment):
+def stop_site(environment):
     environment.stop_web()
     environment.stop_postgres_and_solr()
 
-    return jsonify({'success': 'Child environment {} stopped.'
-                    .format(environment.child_name)})
+    return jsonify({'success': 'Multisite environment {} stopped.'
+                    .format(environment.site_name)})
 
 
 @app.route('/api/status', methods=['POST'])
 @datacats_api_command(True, 'name')
-def child_status(environment):
+def site_status(environment):
     return jsonify({
         'default_port': str(environment.port),
-        'name': environment.child_name,
+        'name': environment.site_name,
         'containers_running': ' '.join(environment.containers_running())
     })
 
 
 @app.route('/api/list', methods=['POST'])
 @datacats_api_command()
-def list_children(environment):
-    return jsonify({'children': environment.children})
+def list_sites(environment):
+    return jsonify({'sites': environment.sites})
+
+
+@app.route('/', methods=['GET'])
+def index():
+    pass
 
 
 def main():
