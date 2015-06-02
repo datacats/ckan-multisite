@@ -47,6 +47,24 @@ with a new datacats environment that suits your organization's needs.
 For more information about using datacats environments, see the
 [datacats documentation](http://docs.datacats.com/).
 
+## Setup
+
+To setup ckan-multisite, you should go into the 'multisite-admin'
+directory and run ``python setup.py install``. This will install
+Datacats, ckan-multisite's administration interface, and related
+libraries and components.
+
+For now until there's a prettier way to install, you will also
+have to create the 'parent' environment through the following
+command:
+
+```
+datacats create multisite
+```
+
+Make sure your current directory is a place you are okay with
+storing the source code for your 'parent' environment (your
+actual source code).
 
 ## License
 
