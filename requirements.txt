@@ -1,0 +1,2 @@
+flask
+-e git+http://github.com/datacats/datacats.git#egg=datacats

@@ -14,7 +14,7 @@ install_requires=[
         'flask'
 ]
 
-exec(open("ckan_multisite/version.py").read())
+__version__ = '0.01dev'
 
 setup(
     name='ckan-multisite',
@@ -25,13 +25,13 @@ setup(
     author_email='contact@boxkite.ca',
     url='https://github.com/boxkite/ckan-multisite',
     packages=[
-        'ckan_multisite',
+        'ckan_multisite'
         ],
     install_requires=install_requires,
     include_package_data=True,
     zip_safe=False,
     entry_points = """
         [console_scripts]
-        ckan-multisite=ckan_multisite.multisite:main
+        ckan-multisite=ckan_multisite.api:main
         """,
     )

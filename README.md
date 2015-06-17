@@ -49,22 +49,28 @@ For more information about using datacats environments, see the
 
 ## Setup
 
-To setup ckan-multisite, you should go into the 'multisite-admin'
-directory and run ``python setup.py install``. This will install
-Datacats, ckan-multisite's administration interface, and related
-libraries and components.
+For best results, all of the steps below should ideally be run in a fresh Ubuntu
+virtual machine.
 
-For now until there's a prettier way to install, you will also
-have to create the 'parent' environment through the following
-command:
+Docker must be installed to use this application. This application will not work
+with the versions of Docker from the Ubuntu (and the majority of distributions)
+because they are too outdated. Please follow the installation instructions for
+Docker on [the docker site](https://docs.docker.com/installation/).
 
-```
-datacats create multisite
-```
+Before beginning the installation, there are a couple of packages which
+ckan-multisite requires of the system it is running of. To get these installed
+on an Ubuntu machine you can run the following command:
 
-Make sure your current directory is a place you are okay with
-storing the source code for your 'parent' environment (your
-actual source code).
+``` apt-get install nginx ```
+
+This application uses setuptools and pip to manage its dependencies. To install
+dependencies and the application itself run the following two commands
+(preferably in a virtualenv):
+
+``` pip install -r requirements.txt python setup.py install ```
+
+To run the server for development, run the ``run_dev.sh`` script in the root
+directory of this repository.
 
 ## License
 
