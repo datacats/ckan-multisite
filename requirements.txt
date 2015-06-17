@@ -1,2 +1,5 @@
 flask
+flask-admin
+flask-login
+flask-sqlalchemy
 -e git+http://github.com/datacats/datacats.git#egg=datacats

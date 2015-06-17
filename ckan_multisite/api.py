@@ -7,7 +7,7 @@
 from os.path import isdir, expanduser, join
 from functools import wraps
 
-from flask import Flask, request, jsonify
+from flask import Blueprint, request, jsonify
 
 from datacats.environment import Environment, DatacatsError
 
@@ -17,8 +17,8 @@ MAIN_DATADIR_PATH = join(expanduser('~'), '.datacats', MAIN_ENV_NAME)
 CLIENT_ERROR_CODE = 409
 # HTTP status for when WE messed up
 SERVER_ERROR_CODE = 500
-app = Flask(__name__)
 
+bp = Blueprint('api', __name__, template_folder='templates')
 
 def api_has_parameters(*keys):
     """
@@ -98,7 +98,7 @@ def datacats_api_command(require_valid_site=False, *keys):
 
 
 
-@app.route('/api/create', methods=['POST'])
+@bp.route('/api/v1/create', methods=['POST'])
 @datacats_api_command(False, 'name')
 def make_site(environment):
     environment.create_directories(create_project_dir=False)
@@ -112,7 +112,7 @@ def make_site(environment):
                     .format(environment.site_name)})
 
 
-@app.route('/api/start', methods=['POST'])
+@bp.route('/api/v1/start', methods=['POST'])
 @datacats_api_command(True, 'name')
 def start_site(environment):
     environment.start_postgres_and_solr()
@@ -123,7 +123,7 @@ def start_site(environment):
 
 
 
-@app.route('/api/purge', methods=['POST'])
+@bp.route('/api/v1/purge', methods=['POST'])
 @datacats_api_command(True, 'name')
 def purge_site(environment):
     environment.stop_web()
@@ -134,7 +134,7 @@ def purge_site(environment):
                     .format(environment.site_name)})
 
 
-@app.route('/api/stop', methods=['POST'])
+@bp.route('/api/v1/stop', methods=['POST'])
 @datacats_api_command(True, 'name')
 def stop_site(environment):
     environment.stop_web()
@@ -144,7 +144,7 @@ def stop_site(environment):
                     .format(environment.site_name)})
 
 
-@app.route('/api/status', methods=['POST'])
+@bp.route('/api/v1/status', methods=['POST'])
 @datacats_api_command(True, 'name')
 def site_status(environment):
     return jsonify({
@@ -154,20 +154,8 @@ def site_status(environment):
     })
 
 
-@app.route('/api/list', methods=['POST'])
+@bp.route('/api/v1/list', methods=['POST'])
 @datacats_api_command()
 def list_sites(environment):
     return jsonify({'sites': environment.sites})
 
-
-@app.route('/', methods=['GET'])
-def index():
-    pass
-
-
-def main():
-    app.run(debug=True)
-
-
-if __name__ == '__main__':
-    main()
