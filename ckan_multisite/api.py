@@ -97,15 +97,16 @@ def datacats_api_command(require_valid_site=False, *keys):
     return decorator
 
 
-
 @bp.route('/api/v1/create', methods=['POST'])
 @datacats_api_command(False, 'name')
 def make_site(environment):
     environment.create_directories(create_project_dir=False)
-    environment.start_postgres_and_solr()
+    environment.start_supporting_containers()
     environment.fix_storage_permissions()
     environment.fix_project_permissions()
+    environment.save_site()
     environment.ckan_db_init()
+    environment.stop_supporting_containers()
     environment.start_web()
 
     return jsonify({'success': 'Multisite environment {} created.'
