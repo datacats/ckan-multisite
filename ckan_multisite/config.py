@@ -19,3 +19,6 @@ MAIN_ENV_NAME = 'multisite'
 # The URI for the backend (either RabbitMQ or Redis) for Celeryd.
 # We recommend redis.
 REDIS_URL = 'redis://localhost:6379/0'
+# True if the server should run in debugging mode (give tracebacks, etc).
+# THIS MUST BE FALSE ON A PRODUCTION SERVER
+DEBUG = True

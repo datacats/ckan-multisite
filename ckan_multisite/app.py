@@ -10,7 +10,7 @@ from ckan_multisite.api import bp as api_bp
 from ckan_multisite.admin import admin
 from db import db
 from ckan_multisite import site
-from config import SECRET_KEY, DB_PATH
+from config import SECRET_KEY, DB_PATH, DEBUG
 
 
 app = Flask(__name__)
@@ -26,4 +26,4 @@ def index():
 
 
 if __name__ == '__main__':
-    app.run(debug=True, use_reloader=False)
+    app.run(debug=DEBUG, use_reloader=False)

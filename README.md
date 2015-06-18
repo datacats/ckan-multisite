@@ -70,16 +70,10 @@ access to your administrative interface to anyone. The suggested method of
 authentication method is using HTTP authorization. In addition, you should make
 the redis server's port unavailable to the outside or use a master password.
 
-If you wish to run the Ubuntu distribution of the Redis server under a normal
-user (recommended), then you will need to copy the configuration file to a place
-you can access, and change the logfile location. The following commands should
-do the trick:
-
-```bash
-cp /etc/redis/redis.conf ./redis.conf
-# Note that this requires a new-ish version of GNU sed.
-sed -i "s/logfile .*$/logfile redis.log/g" redis.conf
-```
+If you wish to run the redis distribution as a non-privelleged user, there is
+a pre-prepared configuration in the root of the repository. When running the
+redis server run it like: ``redis-server ./redis.conf`` (this is already handled
+in the provided script).
 
 
 This application uses setuptools and pip to manage its dependencies. To install
@@ -91,8 +85,8 @@ pip install -r requirements.txt
 python setup.py install
 ```
 
-To run the server for development, run the ``run_dev.sh`` script in the root
-directory of this repository.
+To run the server, run the ``run.sh`` script in the root directory of this
+repository.
 
 ## License
 
