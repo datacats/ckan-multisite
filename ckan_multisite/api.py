@@ -4,14 +4,17 @@
 # under the terms of the MIT License.
 # See LICENSE or http://opensource.org/licenses/MIT
 
+from ckan_multisite.router import DatacatsNginxConfig
+from ckan_multisite.config import MAIN_ENV_NAME
+from ckan_multisite.task import create_site_task, remove_site_task
+
+from flask import Blueprint, request
+from datacats.environment import Environment, DatacatsError
+from json import dumps
+
 from os.path import isdir, expanduser, join
 from functools import wraps
 
-from flask import Blueprint, request, jsonify
-
-from datacats.environment import Environment, DatacatsError
-
-MAIN_ENV_NAME = 'multisite'
 MAIN_DATADIR_PATH = join(expanduser('~'), '.datacats', MAIN_ENV_NAME)
 # HTTP status for when THEY messed up
 CLIENT_ERROR_CODE = 409
@@ -19,6 +22,10 @@ CLIENT_ERROR_CODE = 409
 SERVER_ERROR_CODE = 500
 
 bp = Blueprint('api', __name__, template_folder='templates')
+
+# Simple implementation so that we can use these methods outside Flask
+def jsonify(obj):
+    return dumps(obj)
 
 def api_has_parameters(*keys):
     """
@@ -80,7 +87,7 @@ def datacats_api_command(require_valid_site=False, *keys):
         @env_must_exist
         def wrapper():
             if 'name' not in request.form:
-                site_name = None
+                site_name = 'primary'
             else:
                 site_name = request.form.get('name')
 
@@ -100,15 +107,7 @@ def datacats_api_command(require_valid_site=False, *keys):
 @bp.route('/api/v1/create', methods=['POST'])
 @datacats_api_command(False, 'name')
 def make_site(environment):
-    environment.create_directories(create_project_dir=False)
-    environment.start_supporting_containers()
-    environment.fix_storage_permissions()
-    environment.fix_project_permissions()
-    environment.save_site()
-    environment.ckan_db_init()
-    environment.stop_supporting_containers()
-    environment.start_web()
-
+    create_site_task.apply_async(args=(environment,))
     return jsonify({'success': 'Multisite environment {} created.'
                     .format(environment.site_name)})
 
@@ -127,10 +126,7 @@ def start_site(environment):
 @bp.route('/api/v1/purge', methods=['POST'])
 @datacats_api_command(True, 'name')
 def purge_site(environment):
-    environment.stop_web()
-    environment.stop_postgres_and_solr()
-    environment.purge_data([environment.site_name], never_delete=True)
-
+    remove_site_task.apply_async(args=(environment,))
     return jsonify({'success': 'Multisite environment {} purged.'
                     .format(environment.site_name)})
 
@@ -155,8 +151,7 @@ def site_status(environment):
     })
 
 
-@bp.route('/api/v1/list', methods=['POST'])
+@bp.route('/api/v1/list', methods=['GET'])
 @datacats_api_command()
 def list_sites(environment):
     return jsonify({'sites': environment.sites})
-

@@ -61,13 +61,35 @@ Before beginning the installation, there are a couple of packages which
 ckan-multisite requires of the system it is running of. To get these installed
 on an Ubuntu machine you can run the following command:
 
-``` apt-get install nginx ```
+``` sudo apt-get install nginx redis-server ```
+
+
+The default nginx and redis configurations should be fine for local development,
+but it is advisable to edit the default rule for nginx so that it doesn't allow
+access to your administrative interface to anyone. The suggested method of
+authentication method is using HTTP authorization. In addition, you should make
+the redis server's port unavailable to the outside or use a master password.
+
+If you wish to run the Ubuntu distribution of the Redis server under a normal
+user (recommended), then you will need to copy the configuration file to a place
+you can access, and change the logfile location. The following commands should
+do the trick:
+
+```bash
+cp /etc/redis/redis.conf ./redis.conf
+# Note that this requires a new-ish version of GNU sed.
+sed -i "s/logfile .*$/logfile redis.log/g" redis.conf
+```
+
 
 This application uses setuptools and pip to manage its dependencies. To install
 dependencies and the application itself run the following two commands
 (preferably in a virtualenv):
 
-``` pip install -r requirements.txt python setup.py install ```
+```
+pip install -r requirements.txt
+python setup.py install
+```
 
 To run the server for development, run the ``run_dev.sh`` script in the root
 directory of this repository.

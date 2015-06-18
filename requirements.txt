@@ -2,4 +2,6 @@ flask
 flask-admin
 flask-login
 flask-sqlalchemy
+celery
+redis
 -e git+http://github.com/datacats/datacats.git#egg=datacats

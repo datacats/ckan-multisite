@@ -9,10 +9,12 @@ A library which allows for the creation and modification of
 nginx configuration files related to datacats sites.
 """
 
+from ckan_multisite import config
+
 # {{ and }} because of 
 REDIRECT_TEMPLATE = """server {{
     listen 80;
-    server_name {site_name};
+    server_name {site_name}.{hostname};
 
     location / {{
         proxy_pass http://localhost:{site_port};
@@ -22,6 +24,8 @@ REDIRECT_TEMPLATE = """server {{
 
 from os import listdir, remove
 from os.path import join as path_join
+
+import site
 
 
 BASE_PATH = path_join('/', 'etc', 'nginx', 'sites-available')
@@ -46,12 +50,12 @@ class DatacatsNginxConfig(object):
 
         :param name: The name of the site to add configuration for.
         """
-        text = REDIRECT_TEMPLATE.format(site_name=name, site_port=port)
+        text = REDIRECT_TEMPLATE.format(site_name=name, site_port=port, hostname=config.HOSTNAME)
 
         with open(_get_site_config_name(name), 'w') as config_file:
             config_file.write(text)
 
-    def remove_site(self, name, port):
+    def remove_site(self, name):
         """
         Removes a configuration file from the nginx configuration.
         """

@@ -9,9 +9,13 @@ from flask.ext.admin import Admin
 from ckan_multisite.api import bp as api_bp
 from ckan_multisite.admin import admin
 from db import db
+from ckan_multisite import site
+from config import SECRET_KEY, DB_PATH
+
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///test.db'
+app.config['SQLALCHEMY_DATABASE_URI'] = DB_PATH
+app.secret_key = SECRET_KEY
 admin.init_app(app)
 db.init_app(app)
 app.register_blueprint(api_bp)
@@ -22,4 +26,4 @@ def index():
 
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=True, use_reloader=False)
