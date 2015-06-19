@@ -10,6 +10,7 @@ nginx configuration files related to datacats sites.
 """
 
 from ckan_multisite import config
+from ckan_multisite.config import MAIN_ENV_NAME
 
 # {{ and }} because of 
 REDIRECT_TEMPLATE = """server {{
@@ -25,8 +26,7 @@ REDIRECT_TEMPLATE = """server {{
 from os import listdir, remove
 from os.path import join as path_join
 
-import site
-
+from datacats.environment import Environment
 
 BASE_PATH = path_join('/', 'etc', 'nginx', 'sites-available')
 
@@ -44,22 +44,67 @@ class DatacatsNginxConfig(object):
             self.sites.remove('default')
         self.env_name = name
 
-    def add_site(self, name, port):
+    def add_site(self, site):
         """
         Adds a configuration file to nginx to route a specific site
 
-        :param name: The name of the site to add configuration for.
+        :param site: The Site object to add. Since we need a port, this
+                     must be a full Site object and not just a string.
         """
-        text = REDIRECT_TEMPLATE.format(site_name=name, site_port=port, hostname=config.HOSTNAME)
+        name = site.name
+        port = site.port
+
+        text = REDIRECT_TEMPLATE.format(
+            site_name=name,
+            site_port=port,
+            hostname=config.HOSTNAME)
 
         with open(_get_site_config_name(name), 'w') as config_file:
             config_file.write(text)
+            self.sites.append(name)
 
-    def remove_site(self, name):
+    def remove_site(self, site):
         """
         Removes a configuration file from the nginx configuration.
+
+        :param site: The site to remove. This can weither be a string
+                     or a Site object, and this function will operate
+                     correctly.
         """
+        if hasattr(site, 'name'):
+            name = site.name
+        else:
+            name = site
         remove(_get_site_config_name(name))
+        self.sites.remove(name)
+
+    def sync_sites(self, authoritative_sites):
+        """
+        Ensures that our list of sites (and the ones in nginx) is correct
+
+        :param authoritative_sites: The source (probably the datadir) which we
+                                    should consider the source for correct information.
+        """
+        # In this case we actually need syncing
+        if len(authoritative_sites) != len(self.sites):
+            print 'Unbalanced datacats sites and nginx sites... Attempting to sync them.'
+            authoritative_set = set(authoritative_sites)
+            # This is the set that's in the nginx configuration
+            our_set = set(self.sites)
+
+            # These are the sites which should no longer have a config
+            # file because they were purged outside the app
+            outdated_sites = our_set - authoritative_set
+            for site in outdated_sites:
+                self.remove_site(site)
+
+            # These are sites which have been created outside of the app
+            new_sites = authoritative_set - our_set
+            for site in new_sites:
+                self.add_site(site)
+
+            print 'Sync successful!'
+
 
 def _get_site_config_name(name):
     """
@@ -68,3 +113,5 @@ def _get_site_config_name(name):
     :param name: The name of the site to get the name for.
     """
     return path_join(BASE_PATH, name)
+
+nginx = DatacatsNginxConfig(MAIN_ENV_NAME)

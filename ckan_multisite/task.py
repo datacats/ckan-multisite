@@ -4,26 +4,27 @@ A collection of tasks for the celeryd
 
 from celery import Celery
 from config import REDIS_URL, MAIN_ENV_NAME
-from router import DatacatsNginxConfig
+from router import nginx
 from datacats.error import WebCommandError
+from datacats.cli.create import init
 
 app = Celery('ckan-multisite', broker=REDIS_URL)
 
-nginx = DatacatsNginxConfig(MAIN_ENV_NAME)
-
 @app.task
-def create_site_task(environment):
+def create_site_task(site):
     try:
-        environment.create_directories(create_project_dir=False)
-        environment.start_supporting_containers()
-        environment.fix_storage_permissions()
-        environment.fix_project_permissions()
-        environment.save_site()
-        environment.ckan_db_init()
-        environment.stop_supporting_containers()
-        environment.start_web()
+        
+        init({
+            #TODO: Should this be user controlled?
+            '--address': '0.0.0.0',
+            '--image-only': True,
+            '--no-sysadmin': True,
+            '--site': environment.site_name,
+            '--syslog': False,
+            'ENVIRONMENT_DIR': environment.name,
+            'PORT': None
+        }, no_install=False, quiet=True)
         nginx.add_site(environment.site_name, environment.port)
-        # Update the status in SQLAlchemy
     except WebCommandError as e:
         raise
 

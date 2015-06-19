@@ -8,16 +8,12 @@ from flask import Flask, redirect
 from flask.ext.admin import Admin
 from ckan_multisite.api import bp as api_bp
 from ckan_multisite.admin import admin
-from db import db
 from ckan_multisite import site
-from config import SECRET_KEY, DB_PATH, DEBUG
-
+from config import SECRET_KEY, DEBUG
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = DB_PATH
 app.secret_key = SECRET_KEY
 admin.init_app(app)
-db.init_app(app)
 app.register_blueprint(api_bp)
 
 @app.route('/')
