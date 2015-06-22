@@ -1,0 +1,21 @@
+{% extends 'admin/model/edit.html' %}
+
+{% block head %}
+{{ super() }}
+
+<link href="/static/edit.css" rel="stylesheet">
+{% endblock %}
+
+{% block body %}
+    <div class="alert hidden" id="alert_field"></div>
+    {{ super() }}
+    Environment Actions: 
+    <button id="start_button">Start</button>
+    <button id="stop_button">Stop</button>
+    <button id="status_button">Status</button>
+    <input type="hidden" id="site_name" value="{{ model.name }}"></input>
+{% endblock %}
+
+{% block tail %}
+<script src="/static/edit.js"></script>
+{% endblock %}
