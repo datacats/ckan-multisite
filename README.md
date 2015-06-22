@@ -86,7 +86,7 @@ python setup.py install
 ```
 
 To run the server, run the ``run.sh`` script in the root directory of this
-repository.
+repository. It accepts an argument ``prod`` which will run it using uwsgi.
 
 ## License
 

@@ -23,6 +23,20 @@ REDIRECT_TEMPLATE = """server {{
 }}
 """
 
+DEFAULT_TEMPLATE = """server {{
+    listen 80;
+    server_name {hostname};
+
+    location / {{
+        try_files $uri @ckan_multisite;
+    }}
+
+    location @ckan_multisite {{
+        include uwsgi_params;
+        uwsgi_pass unix:/tmp/uwsgi.sock;
+    }}
+}}"""
+
 from os import listdir, remove
 from os.path import join as path_join
 
@@ -39,9 +53,10 @@ class DatacatsNginxConfig(object):
 
         :param name: The name of the environment we are working with.
         """
+        with open(_get_site_config_name('default'), 'w') as f:
+            f.write(DEFAULT_TEMPLATE.format(hostname=config.HOSTNAME))
         self.sites = listdir(BASE_PATH)
-        if 'default' in self.sites:
-            self.sites.remove('default')
+        self.sites.remove('default')
         self.env_name = name
 
     def update_site(self, site):
