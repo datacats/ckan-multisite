@@ -115,8 +115,8 @@ def make_site(environment):
 @bp.route('/api/v1/start', methods=['POST'])
 @datacats_api_command(True, 'name')
 def start_site(environment):
-    environment.start_postgres_and_solr()
-    environment.start_web()
+    environment.start_supporting_containers()
+    environment.start_ckan()
 
     return jsonify({'success': 'Multisite environment {} started.'
                     .format(environment.site_name)})
@@ -134,8 +134,8 @@ def purge_site(environment):
 @bp.route('/api/v1/stop', methods=['POST'])
 @datacats_api_command(True, 'name')
 def stop_site(environment):
-    environment.stop_web()
-    environment.stop_postgres_and_solr()
+    environment.stop_ckan()
+    environment.stop_supporting_containers()
 
     return jsonify({'success': 'Multisite environment {} stopped.'
                     .format(environment.site_name)})

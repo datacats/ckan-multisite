@@ -11,11 +11,15 @@ from ckan_multisite.site import Site, sites
 from ckan_multisite.db import db
 from ckan_multisite.router import nginx
 from ckan_multisite.config import MAIN_ENV_NAME
+from ckan_multisite.task import create_site_task, remove_site_task
 
 admin = Admin()
 
 class SiteAddForm(BaseForm):
     name = TextField('Site name', [validators.Length(min=4, max=25)])
+
+class SiteEditForm(BaseForm):
+    pass
 
 # Auth is handled by HTTP
 # A lot of the class-members are magic things from BaseModelView
@@ -24,20 +28,19 @@ class SitesView(BaseModelView):
         super(SitesView, self).__init__(Site)
 
     def delete_model(self, site):
-        nginx.remove_site(site)
-        # Purge site
+        print 'HI!'
+        environment = Environment.load(MAIN_ENV_NAME, site.name)
+        remove_site_task.apply_async(args=(environment,))
         return sites.remove(site)
 
     def create_model(self, form):
         site = Site(form.name.data)
-        # Create site
-        
+        environment = Environment.load(MAIN_ENV_NAME, site.name)
+        create_site_task.apply_async(args=(environment,))
         return site
 
     def update_model(self, form, site):
-        site.name = form.name.data
-        nginx.update_site(site, environment.port)
-        # Reload the site's web
+        nginx.update_site(site)
 
     def get_list(self, page, sort_field, sort_desc, search, filters):
         # `page` is zero-based
@@ -57,7 +60,7 @@ class SitesView(BaseModelView):
 
     def get_one(self, id):
         # ids come in as strs (unicode)
-        return sites[int(id)] if id < len(sites) else None
+        return sites[int(id)] if int(id) < len(sites) else None
 
     def scaffold_form(self):
         return SiteAddForm
@@ -70,6 +73,9 @@ class SitesView(BaseModelView):
         # FIXME: This adds a textbox to the list. How do we
         # just have it so that it shows text
         return SiteAddForm
+
+    def get_edit_form(self):
+        return SiteEditForm
 
     def scaffold_sortable_columns(self):
         return dict(zip(SitesView.column_sortable_list, SitesView.column_sortable_list))
@@ -84,7 +90,8 @@ class SitesView(BaseModelView):
     column_label = {'name': 'Name'}
     column_sortable_list = column_list
     column_searchable_list = column_list
-    column_editable_list = column_list
+    column_editable_list = []
+    edit_template = 'edit.html'
     form_columns = column_list
     column_default_sort = 'name'
 

@@ -44,15 +44,30 @@ class DatacatsNginxConfig(object):
             self.sites.remove('default')
         self.env_name = name
 
-    def add_site(self, site):
+    def update_site(self, site):
+        """
+        Recreates the configuration for a site.
+
+        :param site: The site to recreate the configuration of.
+        """
+        self.remove_site(site)
+        self.add_site(site)
+    
+    def add_site(self, site, port=None):
         """
         Adds a configuration file to nginx to route a specific site
 
-        :param site: The Site object to add. Since we need a port, this
-                     must be a full Site object and not just a string.
+        :param site: The Site object to add. This is interpreted as
+                     a string if the port is specified and as a Site
+                     object if the port isn't specified.
+        :param port: The port on which the environment is running,
+                     defaulting to asking the site object.
         """
-        name = site.name
-        port = site.port
+        if port:
+            name = site
+        else:
+            name = site.name
+            port = site.port
 
         text = REDIRECT_TEMPLATE.format(
             site_name=name,

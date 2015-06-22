@@ -11,9 +11,8 @@ from datacats.cli.create import init
 app = Celery('ckan-multisite', broker=REDIS_URL)
 
 @app.task
-def create_site_task(site):
+def create_site_task(environment):
     try:
-        
         init({
             #TODO: Should this be user controlled?
             '--address': '0.0.0.0',
@@ -25,14 +24,15 @@ def create_site_task(site):
             'PORT': None
         }, no_install=False, quiet=True)
         nginx.add_site(environment.site_name, environment.port)
+        print 'create done!'
     except WebCommandError as e:
         raise
 
 
 @app.task
 def remove_site_task(environment):
-    environment.stop_web()
-    environment.stop_postgres_and_solr()
+    nginx.remove_site(environment.site_name)
+    environment.stop_ckan()
+    environment.stop_supporting_containers()
     environment.purge_data([environment.site_name], never_delete=True)
-    nginx.remove_site(environment.site_name, environment.port)
-    # Update the status in SQLAlchemy
+    print 'Purge done!'
