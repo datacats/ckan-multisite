@@ -42,7 +42,7 @@ def api_has_parameters(*keys):
                 return jsonify({
                    'error': 'One or more parameters missing. '
                    'Required parameters are: {}, supplied: {}'
-                   .format(list(keys), request.args)
+                .format(list(keys), request.form)
                 }), CLIENT_ERROR_CODE
 
         return wrapper
@@ -155,5 +155,9 @@ def list_sites(environment):
 @bp.route('/api/v1/change_admin', methods=['POST'])
 @datacats_api_command(True, 'name', 'password')
 def change_admin_pw(environment):
-    environment.create_admin_or_set_password(requests.args['password'])
+    environment.start_supporting_containers()
+    try:
+        environment.create_admin_or_set_password(request.form['password'])
+    finally:
+        environment.stop_supporting_containers()
     return jsonify({'success': 'Admin password successfully changed.'})
