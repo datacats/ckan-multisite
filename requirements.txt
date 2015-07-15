@@ -5,4 +5,4 @@ flask-sqlalchemy
 celery
 redis
 uwsgi
--e git+http://github.com/datacats/datacats.git#egg=datacats
+datacats

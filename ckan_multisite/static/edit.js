@@ -9,7 +9,7 @@ $(function () {
         }
         if (failure == undefined) {
             failure = function (data) {
-                $("#alert_field").text("Error: " + data);
+                $("#alert_field").text("Error: " + data.responseJSON.error);
                 $("#alert_field").removeClass('hidden');
             };
         }

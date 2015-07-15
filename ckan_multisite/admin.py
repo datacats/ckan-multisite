@@ -8,7 +8,6 @@ from wtforms import TextField, validators
 from datacats.environment import Environment
 
 from ckan_multisite.site import Site, sites
-from ckan_multisite.db import db
 from ckan_multisite.router import nginx
 from ckan_multisite.config import MAIN_ENV_NAME
 from ckan_multisite.task import create_site_task, remove_site_task
@@ -28,7 +27,6 @@ class SitesView(BaseModelView):
         super(SitesView, self).__init__(Site)
 
     def delete_model(self, site):
-        print 'HI!'
         environment = Environment.load(MAIN_ENV_NAME, site.name)
         remove_site_task.apply_async(args=(environment,))
         return sites.remove(site)
