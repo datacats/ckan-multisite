@@ -53,7 +53,7 @@ For best results, all of the steps below should ideally be run in a fresh Ubuntu
 virtual machine.
 
 Docker must be installed to use this application. This application will not work
-with the versions of Docker from the Ubuntu (and the majority of distributions)
+with the versions of Docker from Ubuntu (and the majority of distributions)
 because they are too outdated. Please follow the installation instructions for
 Docker on [the docker site](https://docs.docker.com/installation/).
 
@@ -83,6 +83,15 @@ dependencies and the application itself run the following two commands
 ```
 pip install -r requirements.txt
 python setup.py install
+```
+
+Finally, you must create a datacats environment called 'multisite' which
+will contain the source code for your multisites. To do this, change 
+directory to the place you want to put your source code and run the following
+command (your virtualenv must be activated to use the datacats command):
+
+```
+datacats create multisite
 ```
 
 To run the server, run the ``run.sh`` script in the root directory of this
