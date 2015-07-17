@@ -8,9 +8,8 @@ from ckan_multisite.router import DatacatsNginxConfig
 from ckan_multisite.config import MAIN_ENV_NAME
 from ckan_multisite.task import create_site_task, remove_site_task
 
-from flask import Blueprint, request
+from flask import Blueprint, request, jsonify
 from datacats.environment import Environment, DatacatsError
-from json import dumps
 
 from os.path import isdir, expanduser, join
 from functools import wraps
@@ -23,9 +22,6 @@ SERVER_ERROR_CODE = 500
 
 bp = Blueprint('api', __name__, template_folder='templates')
 
-# Simple implementation so that we can use these methods outside Flask
-def jsonify(obj):
-    return dumps(obj)
 
 def api_has_parameters(*keys):
     """
@@ -46,7 +42,7 @@ def api_has_parameters(*keys):
                 return jsonify({
                    'error': 'One or more parameters missing. '
                    'Required parameters are: {}, supplied: {}'
-                   .format(list(keys), request.args)
+                .format(list(keys), request.form)
                 }), CLIENT_ERROR_CODE
 
         return wrapper
@@ -155,3 +151,13 @@ def site_status(environment):
 @datacats_api_command()
 def list_sites(environment):
     return jsonify({'sites': environment.sites})
+
+@bp.route('/api/v1/change_admin', methods=['POST'])
+@datacats_api_command(True, 'name', 'password')
+def change_admin_pw(environment):
+    environment.start_supporting_containers()
+    try:
+        environment.create_admin_or_set_password(request.form['password'])
+    finally:
+        environment.stop_supporting_containers()
+    return jsonify({'success': 'Admin password successfully changed.'})
