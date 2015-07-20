@@ -2,6 +2,8 @@
 
 set -xe
 
+trap "sudo killall celery" SIGINT SIGTERM
+
 redis-server redis.conf
 celery -A ckan_multisite.task worker &
 if [ "$1" == "prod" ]; then
