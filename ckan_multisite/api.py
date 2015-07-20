@@ -157,7 +157,7 @@ def list_sites(environment):
 def change_admin_pw(environment):
     environment.start_supporting_containers()
     try:
-        environment.create_admin_or_set_password(request.form['password'])
+        environment.create_admin_set_password(request.form['password'])
     finally:
         environment.stop_supporting_containers()
     return jsonify({'success': 'Admin password successfully changed.'})
