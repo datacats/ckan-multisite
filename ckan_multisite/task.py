@@ -3,26 +3,19 @@ A collection of tasks for the celeryd
 """
 
 from celery import Celery
-from config import REDIS_URL, MAIN_ENV_NAME
+from config import REDIS_URL
 from router import nginx
 from datacats.error import WebCommandError
-from datacats.cli.create import init
+from datacats.cli.create import create_environment
 
 app = Celery('ckan-multisite', broker=REDIS_URL)
 
 @app.task
 def create_site_task(environment):
     try:
-        init({
-            #TODO: Should this be user controlled?
-            '--address': '0.0.0.0',
-            '--image-only': True,
-            '--no-sysadmin': True,
-            '--site': environment.site_name,
-            '--syslog': False,
-            'ENVIRONMENT_DIR': environment.name,
-            'PORT': None
-        }, no_install=False, quiet=True)
+        create_environment(environment.name, None, '2.3',
+                           False, environment.site_name, False, False,
+                           '0.0.0.0', False, True, True)
         nginx.add_site(environment.site_name, environment.port)
         print 'create done!'
     except WebCommandError as e:
