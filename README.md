@@ -75,6 +75,7 @@ a pre-prepared configuration in the root of the repository. When running the
 redis server run it like: ``redis-server ./redis.conf`` (this is already handled
 in the provided script).
 
+You must also set your site's location in the config.py file.
 
 This application uses setuptools and pip to manage its dependencies. To install
 dependencies and the application itself run the following two commands

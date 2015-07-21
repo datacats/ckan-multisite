@@ -38,7 +38,7 @@ DEFAULT_TEMPLATE = """server {{
 }}"""
 
 from os import listdir, remove
-from os.path import join as path_join
+from os.path import join as path_join, exists
 
 from datacats.environment import Environment
 
@@ -53,8 +53,9 @@ class DatacatsNginxConfig(object):
 
         :param name: The name of the environment we are working with.
         """
-        with open(_get_site_config_name('default'), 'w') as f:
-            f.write(DEFAULT_TEMPLATE.format(hostname=config.HOSTNAME))
+        if not exists(_get_site_config_name('default')):
+            with open(_get_site_config_name('default'), 'w') as f:
+                f.write(DEFAULT_TEMPLATE.format(hostname=config.HOSTNAME))
         self.sites = listdir(BASE_PATH)
         self.sites.remove('default')
         self.env_name = name
