@@ -155,9 +155,12 @@ def list_sites(environment):
 @bp.route('/api/v1/change_admin', methods=['POST'])
 @datacats_api_command(True, 'name', 'password')
 def change_admin_pw(environment):
-    environment.start_supporting_containers()
+    temp_start = 'postgres' not in environment.containers_running()
+    if temp_start:
+        environment.start_supporting_containers()
     try:
         environment.create_admin_set_password(request.form['password'])
     finally:
-        environment.stop_supporting_containers()
+        if temp_start:
+            environment.stop_supporting_containers()
     return jsonify({'success': 'Admin password successfully changed.'})
