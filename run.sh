@@ -2,6 +2,10 @@
 
 set -xe
 
+if [ ! -e ~/.datacats/multisite ]; then
+    datacats init multisite
+fi
+
 redis-server redis.conf
 celery -A ckan_multisite.task worker &
 trap "kill $!" EXIT

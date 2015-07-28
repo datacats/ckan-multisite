@@ -1,0 +1,15 @@
+[datacats]
+name = multisite
+ckan_version = 2.3
+
+[deploy]
+target = datacats@command.datacats.com
+
+[site_primary]
+port = 5402
+address = 127.0.0.1
+
+[site_stuffs]
+port = 5509
+address = 0.0.0.0
+

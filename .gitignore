@@ -2,9 +2,6 @@
 *.pyc
 __pycache__
 
-# The default name for the source directory
-multisite
-
 # Server logs
 redis-server.log
 

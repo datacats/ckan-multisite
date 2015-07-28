@@ -1,0 +1,5 @@
+
+*.pyc
+ckanext_multisitetheme.egg-info/*
+build/*
+dist/*
