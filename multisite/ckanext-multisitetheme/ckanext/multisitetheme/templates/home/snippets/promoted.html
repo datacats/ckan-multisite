@@ -1,10 +1,5 @@
-{% set intro = g.site_intro_text %}
-
 <div class="module-content box">
   <header>
-    {% if intro %}
-      {{ h.render_markdown(intro) }}
-    {% else %}
       <h1 class="page-heading">{{ _("New DataCats Environment") }}</h1>
       <p>
         {% trans %}
@@ -16,13 +11,15 @@
         {% endtrans %}
       </p>
       <p>
-        {% trans %}
-        Customize this site by editing the site configuration,
-        templates and static files in your environment directory
-        then reload your changes with: <code>datacats reload</code>
-        {% endtrans %}
+        This is a new multisite environment. If you are the admin of this
+        environment, you can look in the multisite/ckanext-multisitetheme
+        directory and edit the templates to customize this site however 
+        you'd like!
       </p>
-    {% endif %}
+      <p>
+        Otherwise, you should get in contact with the multisite admin for 
+        them to set you up an admin password so you can get going!
+      </p>
   </header>
 
   {% block home_image %}
