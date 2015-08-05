@@ -22,7 +22,7 @@ DATACATS_DIRECTORY = expanduser('~/.datacats')
 # We recommend redis.
 REDIS_URL = 'redis://localhost:6379/0'
 # An address to listen on
-ADDRESS = '127.0.0.1'
+ADDRESS = '0.0.0.0'
 PORT = 5000
 # True if the server should run in debugging mode (give tracebacks, etc).
 # THIS MUST BE FALSE ON A PRODUCTION SERVER

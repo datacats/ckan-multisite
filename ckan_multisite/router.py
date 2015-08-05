@@ -12,6 +12,8 @@ nginx configuration files related to datacats sites.
 from ckan_multisite import config
 from ckan_multisite.config import MAIN_ENV_NAME
 
+from os import symlink
+
 # {{ and }} because of 
 REDIRECT_TEMPLATE = """server {{
     listen 80;
@@ -42,7 +44,9 @@ from os.path import join as path_join, exists
 
 from datacats.environment import Environment
 
-BASE_PATH = path_join('/', 'etc', 'nginx', 'sites-available')
+NGINX_CONFIG_DIR = path_join('/', 'etc', 'nginx')
+SITES_AVAILABLE_PATH = path_join(NGINX_CONFIG_DIR, 'sites-available')
+SITES_ENABLED_PATH = path_join(NGINX_CONFIG_DIR, 'sites-enabled')
 
 
 class DatacatsNginxConfig(object):
@@ -55,7 +59,7 @@ class DatacatsNginxConfig(object):
         """
         with open(_get_site_config_name('default'), 'w') as f:
             f.write(DEFAULT_TEMPLATE.format(hostname=config.HOSTNAME))
-        self.sites = listdir(BASE_PATH)
+        self.sites = listdir(SITES_AVAILABLE_PATH)
         self.sites.remove('default')
         self.env_name = name
 
@@ -93,6 +97,8 @@ class DatacatsNginxConfig(object):
             config_file.write(text)
             self.sites.append(name)
 
+        symlink(_get_site_config_name(name), _get_site_enabled_name(name))
+
     def remove_site(self, site):
         """
         Removes a configuration file from the nginx configuration.
@@ -106,6 +112,7 @@ class DatacatsNginxConfig(object):
         else:
             name = site
         remove(_get_site_config_name(name))
+        remove(_get_site_enabled_name(name))
         self.sites.remove(name)
 
     def sync_sites(self, authoritative_sites):
@@ -136,12 +143,16 @@ class DatacatsNginxConfig(object):
             print 'Sync successful!'
 
 
+def _get_site_enabled_name(name):
+    return path_join(SITES_ENABLED_PATH, name)
+
+
 def _get_site_config_name(name):
     """
     Gets the name of a configuration file for a given site.
 
     :param name: The name of the site to get the name for.
     """
-    return path_join(BASE_PATH, name)
+    return path_join(SITES_AVAILABLE_PATH, name)
 
 nginx = DatacatsNginxConfig(MAIN_ENV_NAME)
