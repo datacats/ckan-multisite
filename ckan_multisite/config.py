@@ -2,6 +2,8 @@
 Contains configuration options
 """
 
+from os.path import expanduser
+
 # The base hostname of your site, e.x. datacats.com
 HOSTNAME = 'mysite.wow'
 # This is randomly generated and widely available, please don't use this in prod.
@@ -15,10 +17,13 @@ SECRET_KEY = '3\xfbIO\x99\xbd\x16u\xa1\x85\xad2\xf2nDm[\xc4\xad\xa1D\x97\xb4d\x9
 MAIN_ENV_NAME = 'multisite'
 # The datacats directory. This probably shouldn't change but
 # is in config to future-proof from new versions of datacats.
-DATACATS_DIRECTORY = '~/.datacats'
+DATACATS_DIRECTORY = expanduser('~/.datacats')
 # The URI for the backend (either RabbitMQ or Redis) for Celeryd.
 # We recommend redis.
 REDIS_URL = 'redis://localhost:6379/0'
+# An address to listen on
+ADDRESS = '127.0.0.1'
+PORT = 5000
 # True if the server should run in debugging mode (give tracebacks, etc).
 # THIS MUST BE FALSE ON A PRODUCTION SERVER
 DEBUG = True

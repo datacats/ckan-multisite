@@ -3,7 +3,7 @@ from ckan_multisite.config import MAIN_ENV_NAME, DATACATS_DIRECTORY
 from datacats.environment import Environment
 
 from os import listdir, mkdir
-from os.path import join as path_join, expanduser
+from os.path import join as path_join, expanduser, exists
 
 from bisect import insort_left
 
@@ -44,7 +44,8 @@ class Site(object):
         return self.name > site.name
 
 
-mkdir(path_join(DATACATS_DIRECTORY, MAIN_ENV_NAME))
+if not exists(path_join(DATACATS_DIRECTORY)):
+    mkdir(path_join(DATACATS_DIRECTORY))
 # This is just here to initially populate the list
 __dcats_listing = listdir(expanduser(path_join(DATACATS_DIRECTORY, MAIN_ENV_NAME, 'sites')))
 # Primary child isn't mean for them

@@ -9,7 +9,7 @@ from flask.ext.admin import Admin
 from ckan_multisite.api import bp as api_bp
 from ckan_multisite.admin import admin
 from ckan_multisite import site
-from config import SECRET_KEY, DEBUG
+from config import SECRET_KEY, DEBUG, ADDRESS, PORT
 
 app = Flask(__name__)
 app.secret_key = SECRET_KEY
@@ -22,4 +22,4 @@ def index():
 
 
 if __name__ == '__main__':
-    app.run(debug=DEBUG, use_reloader=False)
+    app.run(debug=DEBUG, use_reloader=False, host=ADDRESS, port=PORT)
