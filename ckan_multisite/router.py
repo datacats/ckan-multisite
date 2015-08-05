@@ -53,9 +53,8 @@ class DatacatsNginxConfig(object):
 
         :param name: The name of the environment we are working with.
         """
-        if not exists(_get_site_config_name('default')):
-            with open(_get_site_config_name('default'), 'w') as f:
-                f.write(DEFAULT_TEMPLATE.format(hostname=config.HOSTNAME))
+        with open(_get_site_config_name('default'), 'w') as f:
+            f.write(DEFAULT_TEMPLATE.format(hostname=config.HOSTNAME))
         self.sites = listdir(BASE_PATH)
         self.sites.remove('default')
         self.env_name = name
