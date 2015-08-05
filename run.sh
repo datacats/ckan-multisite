@@ -6,7 +6,7 @@ if [ ! -e ./virtualenv ]; then
     echo
     if [[ "$REPLY" =~ ^[Yy]$ ]]; then
         set -e
-        sudo apt-get update && sudo apt-get upgrade
+        sudo apt-get update -y && sudo apt-get upgrade -y
         sudo apt-get install -y python python-dev python-virtualenv redis-server nginx
         virtualenv virtualenv
         source virtualenv/bin/activate
