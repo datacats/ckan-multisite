@@ -13,7 +13,7 @@ if [ ! -e ./virtualenv ]; then
         pip install -r requirements.txt
         python setup.py develop
         if ! command -v docker > /dev/null 2>&1; then
-            wget https://get.docker.io/ | sh
+            wget -qO- https://get.docker.io/ | sh
         fi
         sudo chown -R $(whoami): /etc/nginx/
         datacats init multisite
