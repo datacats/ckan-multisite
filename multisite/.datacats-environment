@@ -1,7 +1,0 @@
-[datacats]
-name = multisite
-ckan_version = 2.3
-
-[deploy]
-target = datacats@command.datacats.com
-

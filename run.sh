@@ -31,7 +31,9 @@ set -xe
 
 if [ ! -e ~/.datacats/multisite ]; then
     datacats pull
-    datacats init multisite
+    datacats create multisite
+    cp promoted.html multisite/ckanext-multisitetheme/ckanext/multisitetheme/templates/home/snippets
+    datacats reload multisite
     echo "You should now be all set up to use CKAN multisite."
 fi
 
