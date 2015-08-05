@@ -16,8 +16,9 @@ if [ ! -e ./virtualenv ]; then
             wget -qO- https://get.docker.io/ | sh
         fi
         sudo chown -R $(whoami): /etc/nginx/
-        datacats init multisite
-        echo "Your system should be all set up for multisite now! Running..."
+	sudo usermod -aG docker $(whoami)
+	echo "Due to an unfortunate limitation in Linux (group addition doesn't take effect until you log out and in), you will need to log out and back in from your system and then run this script again."
+	exit 0
     else
         echo "Please see instructions in README.md"
         exit 1
@@ -27,6 +28,11 @@ fi
 set -xe
 
 source virtualenv/bin/activate
+
+if [ ! -e multisite ]; then
+    datacats init multisite
+    echo "You should now be all set up to use CKAN multisite."
+fi
 
 redis-server redis.conf
 celery -A ckan_multisite.task worker &
