@@ -25,11 +25,12 @@ if [ ! -e ./virtualenv ]; then
     fi
 fi
 
-set -xe
-
 source virtualenv/bin/activate
 
-if [ ! -e multisite ]; then
+set -xe
+
+if [ ! -e ~/.datacats/multisite ]; then
+    datacats pull
     datacats init multisite
     echo "You should now be all set up to use CKAN multisite."
 fi
