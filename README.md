@@ -79,7 +79,7 @@ You must also set your site's location in the config.py file.
 
 This application uses setuptools and pip to manage its dependencies. To install
 dependencies and the application itself run the following two commands
-(preferably in a virtualenv):
+(in a virtualenv):
 
 ```
 pip install -r requirements.txt
