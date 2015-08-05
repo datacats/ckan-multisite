@@ -38,7 +38,7 @@ DEFAULT_TEMPLATE = """server {{
 }}"""
 
 from os import listdir, remove
-from os.path import join as path_join
+from os.path import join as path_join, exists
 
 from datacats.environment import Environment
 

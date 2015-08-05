@@ -1,0 +1,37 @@
+<div class="module-content box">
+  <header>
+      <h1 class="page-heading">{{ _("New DataCats Environment") }}</h1>
+      <p>
+        {% trans %}
+        Welcome to your new data catalog!
+        <a href="/user/login">Log in</a> with the
+        "admin" account password you created, then create a
+        <a href="/dataset/new">new dataset</a> or a
+        <a href="/organization/new">new organization</a>.
+        {% endtrans %}
+      </p>
+      <p>
+        This is a new multisite environment. If you are the admin of this
+        environment, you can look in the multisite/ckanext-multisitetheme
+        directory and edit the templates to customize this site however 
+        you'd like! If you're having issues with this environment or the 
+        multisite administrative interface, visit <a href="https://github.com/datacats/ckanext-multisite/issues">the issues page</a>
+        and file an issue. We'll be glad to help you out!
+      </p>
+      <p>
+        Otherwise, you should get in contact with the multisite admin for 
+        them to set you up an admin password so you can get going!
+      </p>
+  </header>
+
+  {% block home_image %}
+    <section class="featured media-overlay hidden-phone">
+      <h2 class="media-heading">{% block home_image_caption %}{{ _("Feature datasets here") }}{% endblock %}</h2>
+      {% block home_image_content %}
+        <a class="media-image" href="#">
+          <img src="{{ h.url_for_static('/datacats/chart.png') }}" alt="Example chart" width="420" height="220" />
+        </a>
+      {% endblock %}
+    </section>
+  {% endblock %}
+</div>
