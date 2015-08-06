@@ -10,8 +10,10 @@ nginx configuration files related to datacats sites.
 """
 
 from ckan_multisite import config
-from ckan_multisite.config import MAIN_ENV_NAME, DEBUG
+from ckan_multisite.config import MAIN_ENV_NAME, DEBUG, PORT
 from os import symlink
+from os.path import exists
+import subprocess
 
 REDIRECT_TEMPLATE = """server {{
     listen 80;
@@ -25,30 +27,30 @@ REDIRECT_TEMPLATE = """server {{
 
 if not DEBUG:
     DEFAULT_TEMPLATE = """server {{
-        listen 80;
-        server_name {hostname};
+    listen 80;
+    server_name {hostname};
 
-        location / {{
-            try_files $uri @ckan_multisite;
-        }}
+    location / {{
+        try_files $uri @ckan_multisite;
+    }}
 
-        location @ckan_multisite {{
-            include uwsgi_params;
-            uwsgi_pass unix:/tmp/uwsgi.sock;
-        }}
-    }}"""
+    location @ckan_multisite {{
+        include uwsgi_params;
+        uwsgi_pass unix:/tmp/uwsgi.sock;
+    }}
+}}
+"""
 else:
     # Template for proxy passing (i.e. flask server)
-    DEFAULT_TEMPLATE_DEBUG = """
-    server {{
-        listen 80;
-        server_name {hostname};
+    DEFAULT_TEMPLATE = """server {{
+    listen 80;
+    server_name {hostname};
 
-        location / {{
-            proxy_pass http://127.0.0.1:{debug_port};
-        }}
+    location / {{
+        proxy_pass http://127.0.0.1:""" + str(PORT) + """;
     }}
-    """
+}}
+"""
 
 from os import listdir, remove
 from os.path import join as path_join, exists
@@ -70,9 +72,13 @@ class DatacatsNginxConfig(object):
         """
         with open(_get_site_config_name('default'), 'w') as f:
             f.write(DEFAULT_TEMPLATE.format(hostname=config.HOSTNAME))
+        if not exists(_get_site_enabled_name('default')):
+            symlink(_get_site_config_name('default'), _get_site_enabled_name('default'))
         self.sites = listdir(SITES_AVAILABLE_PATH)
         self.sites.remove('default')
         self.env_name = name
+        # Make sure that Nginx is up to date with the directory.
+        self.reload_nginx()
 
     def update_site(self, site):
         """
@@ -82,6 +88,11 @@ class DatacatsNginxConfig(object):
         """
         self.remove_site(site)
         self.add_site(site)
+
+    def reload_nginx(self):
+        # TODO: We should probably check that this succeeds
+        # We can use sudo because of the weird sudoers hack in run.sh
+        subprocess.call(['sudo', 'service', 'nginx', 'reload'])
 
     def add_site(self, site, port=None):
         """
@@ -109,6 +120,7 @@ class DatacatsNginxConfig(object):
             self.sites.append(name)
 
         symlink(_get_site_config_name(name), _get_site_enabled_name(name))
+        self.reload_nginx()
 
     def remove_site(self, site):
         """
@@ -122,9 +134,11 @@ class DatacatsNginxConfig(object):
             name = site.name
         else:
             name = site
+        # Remove the site config itself and the enabled symlink
         remove(_get_site_config_name(name))
         remove(_get_site_enabled_name(name))
         self.sites.remove(name)
+        self.reload_nginx()
 
     def sync_sites(self, authoritative_sites):
         """

@@ -1,5 +1,9 @@
 #!/bin/bash
 
+if [ ! -e "$PWD/run.sh" ]; then
+    echo "This script must be run from the same directory as 'run.sh' in the ckan_multisite directory."
+    exit 1
+fi
 
 if [ ! -e ./virtualenv ]; then
     read -p "This script will attempt to set up your server for use with CKAN multisite. We're making the assumption that you're running some Debian-based distro. If not, see manual instructions in the README.md. Please enter y if you'd like to continue, n otherwise: " -n 1 -r
@@ -17,6 +21,7 @@ if [ ! -e ./virtualenv ]; then
         fi
         sudo chown -R $(whoami): /etc/nginx/
 	sudo usermod -aG docker $(whoami)
+        echo "$(whoami) ALL=NOPASSWD: /usr/sbin/service nginx reload" | sudo tee -a /etc/sudoers
 	echo "Due to an unfortunate limitation in Linux (group addition doesn't take effect until you log out and in), you will need to log out and back in from your system and then run this script again."
 	exit 0
     else
