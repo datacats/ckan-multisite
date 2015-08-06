@@ -35,7 +35,7 @@ def api_has_parameters(*keys):
     def decorator(func):
         @wraps(func)
         def wrapper(*f_args):
-            if all([key in request.form and request.form[key]
+            if all([key in request.values and request.values[key]
                     for key in keys]):
                 # Let the function deal with it - valid
                 return func(*f_args)
@@ -43,7 +43,7 @@ def api_has_parameters(*keys):
                 return jsonify({
                    'error': 'One or more parameters missing. '
                    'Required parameters are: {}, supplied: {}'
-                .format(list(keys), request.form)
+                .format(list(keys), request.values)
                 }), CLIENT_ERROR_CODE
 
         return wrapper
@@ -83,10 +83,10 @@ def datacats_api_command(require_valid_site=False, *keys):
         @api_has_parameters(*keys)
         @env_must_exist
         def wrapper():
-            if 'name' not in request.form:
+            if 'name' not in request.values:
                 site_name = 'primary'
             else:
-                site_name = request.form.get('name')
+                site_name = request.values.get('name')
 
             try:
                 environment = Environment.load(MAIN_ENV_NAME, site_name)
@@ -149,7 +149,7 @@ def site_status(environment):
     })
 
 
-@bp.route('/api/v1/is_site_ready')
+@bp.route('/api/v1/is_site_ready', methods=['GET'])
 @datacats_api_command(False, 'name')
 def site_ready(environment):
     return jsonify({'ready': site_by_name(environment.site_name).finished_create})
@@ -167,7 +167,7 @@ def change_admin_pw(environment):
     if temp_start:
         environment.start_supporting_containers()
     try:
-        environment.create_admin_set_password(request.form['password'])
+        environment.create_admin_set_password(request.values['password'])
     finally:
         if temp_start:
             environment.stop_supporting_containers()
