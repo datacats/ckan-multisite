@@ -10,3 +10,6 @@ redis-server.log
 
 # Pip stuffs
 *.egg*
+
+# Multisite environment generate by default script
+multisite
