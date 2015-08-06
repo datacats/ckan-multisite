@@ -10,32 +10,45 @@ nginx configuration files related to datacats sites.
 """
 
 from ckan_multisite import config
-from ckan_multisite.config import MAIN_ENV_NAME
+from ckan_multisite.config import MAIN_ENV_NAME, DEBUG
 
-# {{ and }} because of 
+# {{ and }} because of
 REDIRECT_TEMPLATE = """server {{
     listen 80;
     server_name {site_name}.{hostname};
 
     location / {{
-        proxy_pass http://localhost:{site_port};
+        proxy_pass http://127.0.0.1:{site_port};
     }}
 }}
 """
 
-DEFAULT_TEMPLATE = """server {{
-    listen 80;
-    server_name {hostname};
+if not DEBUG:
+    DEFAULT_TEMPLATE = """server {{
+        listen 80;
+        server_name {hostname};
 
-    location / {{
-        try_files $uri @ckan_multisite;
-    }}
+        location / {{
+            try_files $uri @ckan_multisite;
+        }}
 
-    location @ckan_multisite {{
-        include uwsgi_params;
-        uwsgi_pass unix:/tmp/uwsgi.sock;
+        location @ckan_multisite {{
+            include uwsgi_params;
+            uwsgi_pass unix:/tmp/uwsgi.sock;
+        }}
+    }}"""
+else:
+    # Template for proxy passing (i.e. flask server)
+    DEFAULT_TEMPLATE_DEBUG = """
+    server {{
+        listen 80;
+        server_name {hostname};
+
+        location / {{
+            proxy_pass http://127.0.0.1:{debug_port};
+        }}
     }}
-}}"""
+    """
 
 from os import listdir, remove
 from os.path import join as path_join, exists
@@ -67,7 +80,7 @@ class DatacatsNginxConfig(object):
         """
         self.remove_site(site)
         self.add_site(site)
-    
+
     def add_site(self, site, port=None):
         """
         Adds a configuration file to nginx to route a specific site
