@@ -35,7 +35,7 @@ class SitesView(BaseModelView):
         # Sites start not having their data finished.
         site = Site(form.name.data, finished_create=False)
         environment = Environment.load(MAIN_ENV_NAME, site.name)
-        create_site_task.apply_async(args=(environment,))
+        create_site_task.apply_async(args=(site,))
         return site
 
     def update_model(self, form, site):
