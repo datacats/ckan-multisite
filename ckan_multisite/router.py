@@ -39,7 +39,7 @@ if not DEBUG:
     }}"""
 else:
     # Template for proxy passing (i.e. flask server)
-    DEFAULT_TEMPLATE_DEBUG = """
+    DEFAULT_TEMPLATE = """
     server {{
         listen 80;
         server_name {hostname};
