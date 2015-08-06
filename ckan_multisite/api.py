@@ -7,6 +7,7 @@
 from ckan_multisite.router import DatacatsNginxConfig
 from ckan_multisite.config import MAIN_ENV_NAME
 from ckan_multisite.task import create_site_task, remove_site_task
+from ckan_multisite.site import site_by_name
 
 from flask import Blueprint, request, jsonify
 from datacats.environment import Environment, DatacatsError
@@ -145,6 +146,12 @@ def site_status(environment):
         'name': environment.site_name,
         'containers_running': ' '.join(environment.containers_running())
     })
+
+
+@bp.route('/api/v1/is_site_ready')
+@datacats_api_command(False, 'name')
+def site_ready(environment):
+    return jsonify({'ready': site_by_name(environment.site_name).finished_create})
 
 
 @bp.route('/api/v1/list', methods=['GET'])

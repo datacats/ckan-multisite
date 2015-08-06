@@ -32,7 +32,8 @@ class SitesView(BaseModelView):
         return sites.remove(site)
 
     def create_model(self, form):
-        site = Site(form.name.data)
+        # Sites start not having their data finished.
+        site = Site(form.name.data, finished_create=False)
         environment = Environment.load(MAIN_ENV_NAME, site.name)
         create_site_task.apply_async(args=(environment,))
         return site

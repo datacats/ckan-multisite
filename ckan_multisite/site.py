@@ -11,8 +11,11 @@ from router import nginx
 
 sites = []
 
+def site_by_name(name):
+    return next(site for site in sites if site.name == name)
+
 class Site(object):
-    def __init__(self, name, sort=True):
+    def __init__(self, name, finished_create=True, sort=True):
         """
         Initializes a site object. Also places it into the global `sites` list.
 
@@ -24,6 +27,8 @@ class Site(object):
         self.name = name
         self.environment = Environment.load(MAIN_ENV_NAME, name)
         self.port = self.environment.port
+        self.finished_create = finished_create
+
         if not sort:
             sites.append(self)
         else:

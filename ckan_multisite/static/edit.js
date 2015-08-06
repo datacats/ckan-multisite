@@ -28,7 +28,7 @@ $(function () {
             error: failure
         });
     }
-    
+
     $("#start_button").click(function () {
         simple_api_request("start");
     });
@@ -81,4 +81,8 @@ $(function () {
             submit_pw_form(event);
         }
     });
+
+    function poll_create_done() {
+        simple_api_request("")
+    }
 });
