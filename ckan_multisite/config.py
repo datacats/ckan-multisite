@@ -5,7 +5,7 @@ Contains configuration options
 from os.path import expanduser
 
 # The base hostname of your site, e.x. datacats.com
-HOSTNAME = 'mysite.wow'
+HOSTNAME = 'example.com'
 # This is randomly generated and widely available, please don't use this in prod.
 # This is a secret key which is used to make sure forms are actually submitted from us
 # rather than from some user's tool or other. Therefore it should be randomly generated
