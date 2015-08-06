@@ -3,7 +3,6 @@ A collection of tasks for the celeryd
 """
 
 from celery import Celery
-from celery.singals import task_success
 from config import REDIS_URL
 from router import nginx
 from site import site_by_name
