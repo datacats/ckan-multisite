@@ -7,7 +7,7 @@
 from ckan_multisite.router import DatacatsNginxConfig
 from ckan_multisite.config import MAIN_ENV_NAME
 from ckan_multisite.task import create_site_task, remove_site_task
-from ckan_multisite.site import site_by_name
+from ckan_multisite.site import site_by_name, Site
 
 from flask import Blueprint, request, jsonify
 from datacats.environment import Environment, DatacatsError
@@ -104,7 +104,8 @@ def datacats_api_command(require_valid_site=False, *keys):
 @bp.route('/api/v1/create', methods=['POST'])
 @datacats_api_command(False, 'name')
 def make_site(environment):
-    create_site_task.apply_async(args=(environment,))
+    site = Site(environment.site_name, finished_create=False)
+    create_site_task.apply_async(args=(site,))
     return jsonify({'success': 'Multisite environment {} created.'
                     .format(environment.site_name)})
 
@@ -123,7 +124,7 @@ def start_site(environment):
 @bp.route('/api/v1/purge', methods=['POST'])
 @datacats_api_command(True, 'name')
 def purge_site(environment):
-    remove_site_task.apply_async(args=(environment,))
+    remove_site_task.apply_async(args=(site_by_name(environment.site_name),))
     return jsonify({'success': 'Multisite environment {} purged.'
                     .format(environment.site_name)})
 
