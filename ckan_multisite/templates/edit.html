@@ -23,10 +23,10 @@
                 <input id="confirm_pw" type="password" placeholder="Confirm"></input><BR>
             </div>
         </div>
-        <button id="reset_pw_button">Reset Admin Password<BR>
+        <button id="reset_pw_button">Reset Admin Password<BR></button>
     </form>
     <input type="hidden" id="site_name" value="{{ model.name }}"></input>
-    <input type="hidden" id="site_name" value="{{ model.finished_create }}"></input>
+    <input type="hidden" id="finished_create" value="{{ model.finished_create }}"></input>
 {% endblock %}
 
 {% block tail %}

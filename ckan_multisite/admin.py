@@ -27,8 +27,7 @@ class SitesView(BaseModelView):
         super(SitesView, self).__init__(Site)
 
     def delete_model(self, site):
-        environment = Environment.load(MAIN_ENV_NAME, site.name)
-        remove_site_task.apply_async(args=(environment,))
+        remove_site_task.apply_async(args=(site,))
         return sites.remove(site)
 
     def create_model(self, form):

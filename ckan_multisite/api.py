@@ -149,9 +149,10 @@ def site_status(environment):
     })
 
 
-@bp.route('/api/v1/is_site_ready', methods=['GET'])
+@bp.route('/api/v1/is_site_ready', methods=['POST'])
 @datacats_api_command(False, 'name')
 def site_ready(environment):
+    print site_by_name(environment.site_name).finished_create
     return jsonify({'ready': site_by_name(environment.site_name).finished_create})
 
 

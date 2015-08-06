@@ -1,23 +1,26 @@
 $(function () {
     // Does a ajax request to the ckan-multisite API
-    function simple_api_request(endpoint, success, failure, params) {
-        $("body").css("cursor", "wait");
+    function simple_api_request(endpoint, success, failure, method, params) {
+        $("html").css("cursor", "wait");
         if (success == undefined) {
             success = function (data) {
                 $("#alert_field").text(data.success);
                 $("#alert_field").removeClass('hidden');
-                $("body").css("cursor", "auto");
+                $("html").css("cursor", "auto");
             };
         }
         if (failure == undefined) {
             failure = function (data) {
                 $("#alert_field").text("Error: " + data.responseJSON.error);
                 $("#alert_field").removeClass('hidden');
-                $("body").css("cursor", "auto");
+                $("html").css("cursor", "auto");
             };
         }
         if (params == undefined) {
             params = {name: $("#site_name").val()}
+        }
+        if (method == undefined) {
+            method = 'POST';
         }
 
         $.ajax({
@@ -75,14 +78,36 @@ $(function () {
     }
 
     $("#reset_pw_button").click(submit_pw_form);
-    $("#pw,#pw_confirm").keypress(function(event) {
+    $("#pw,#confirm_pw").keypress(function(event) {
         // Enter key
         if (event.which == 13) {
             submit_pw_form(event);
         }
     });
 
+    function enable_buttons() {
+        $('#status_button,#pw,#confirm_pw,#reset_pw_button,#start_button,#stop_button').removeAttr('disabled')
+    }
+
+    function disable_buttons() {
+        $('#status_button,#pw,#confirm_pw,#reset_pw_button,#start_button,#stop_button').prop('disabled', 'true')
+    }
+
+    disable_buttons()
+
     function poll_create_done() {
-        simple_api_request("")
+        simple_api_request("is_site_ready", function (data) {
+	    if (data.ready) {
+                enable_buttons();
+                $("html").css("cursor", "auto");
+            }
+            else {
+                setTimeout(poll_create_done, 3000);
+            }
+	});
+    }
+
+    if ($('#finished_create').val() !== "true") {
+        poll_create_done();
     }
 });

@@ -28,7 +28,8 @@ def create_site_task(site):
 
 @app.task
 def remove_site_task(site):
-    nginx.remove_site(site.environment.site_name)
+    environment = site.environment
+    nginx.remove_site(environment.site_name)
     environment.stop_ckan()
     environment.stop_supporting_containers()
     environment.purge_data([environment.site_name], never_delete=True)
