@@ -10,7 +10,7 @@ nginx configuration files related to datacats sites.
 """
 
 from ckan_multisite import config
-from ckan_multisite.config import MAIN_ENV_NAME, DEBUG
+from ckan_multisite.config import MAIN_ENV_NAME, DEBUG, PORT
 from os import symlink
 
 REDIRECT_TEMPLATE = """server {{
@@ -45,7 +45,7 @@ else:
         server_name {hostname};
 
         location / {{
-            proxy_pass http://127.0.0.1:{debug_port};
+            proxy_pass http://127.0.0.1:""" + str(PORT) + """;
         }}
     }}
     """
