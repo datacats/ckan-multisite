@@ -22,6 +22,9 @@ if [ ! -e ./virtualenv ]; then
         sudo chown -R $(whoami): /etc/nginx/
 	sudo usermod -aG docker $(whoami)
         echo "$(whoami) ALL=NOPASSWD: /usr/sbin/service nginx reload" | sudo tee -a /etc/sudoers
+        # Generate a secret key
+        sed "s/#SECRET_.*/SECRET_KEY = '$(python -c 'import os;print os.urandom(20)' | base64)'/" ckan_multisite/config.py.template > ckan_multisite/config.py
+        "${EDITOR:-nano}" ckan_multisite/config.py
 	echo "Due to an unfortunate limitation in Linux (group addition doesn't take effect until you log out and in), you will need to log out and back in from your system and then run this script again."
 	exit 0
     else
