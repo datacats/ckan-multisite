@@ -3,13 +3,13 @@ A collection of tasks for the celeryd
 """
 
 from celery import Celery
-from config import REDIS_URL
+from config import CELERY_BACKEND_URL
 from router import nginx
 from site import site_by_name
 from datacats.error import WebCommandError
 from datacats.cli.create import create_environment
 
-app = Celery('ckan-multisite', broker=REDIS_URL)
+app = Celery('ckan-multisite', broker=CELERY_BACKEND_URL, backend=CELERY_BACKEND_URL)
 
 @app.task
 def create_site_task(site):
@@ -19,8 +19,6 @@ def create_site_task(site):
                            False, environment.site_name, False, False,
                            '0.0.0.0', False, True, True)
         nginx.add_site(environment.site_name, environment.port)
-        # The API will give a finished signal for this site name now.
-        site.finished_create = True
         print 'create done!'
     except WebCommandError as e:
         raise

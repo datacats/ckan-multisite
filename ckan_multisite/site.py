@@ -28,6 +28,7 @@ class Site(object):
         self.environment = Environment.load(MAIN_ENV_NAME, name)
         self.port = self.environment.port
         self.finished_create = finished_create
+        self.celery_task = None
 
         if not sort:
             sites.append(self)

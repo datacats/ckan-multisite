@@ -33,7 +33,8 @@ class SitesView(BaseModelView):
     def create_model(self, form):
         # Sites start not having their data finished.
         site = Site(form.name.data, finished_create=False)
-        create_site_task.apply_async(args=(site,))
+        result = create_site_task.apply_async(args=(site,))
+        site.result = result
         return site
 
     def update_model(self, form, site):

@@ -20,7 +20,7 @@ MAIN_ENV_NAME = 'multisite'
 DATACATS_DIRECTORY = expanduser('~/.datacats')
 # The URI for the backend (either RabbitMQ or Redis) for Celeryd.
 # We recommend redis.
-REDIS_URL = 'redis://localhost:6379/0'
+CELERY_BACKEND_URL = 'redis://localhost:6379/0'
 # An address to listen on
 ADDRESS = '0.0.0.0'
 PORT = 5000
