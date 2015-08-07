@@ -93,7 +93,6 @@ $(function () {
         $('#status_button,#pw,#confirm_pw,#reset_pw_button,#start_button,#stop_button').prop('disabled', 'true')
     }
 
-    disable_buttons()
 
     function poll_create_done() {
         simple_api_request("is_site_ready", function (data) {
@@ -107,7 +106,8 @@ $(function () {
 	});
     }
 
-    if ($('#finished_create').val() !== "true") {
+    if ($('#finished_create').val() !== "True") {
+        disable_buttons();
         poll_create_done();
     }
 });
