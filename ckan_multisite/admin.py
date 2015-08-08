@@ -6,6 +6,7 @@ from flask.ext.admin.form import BaseForm
 from wtforms import TextField, validators
 
 from datacats.environment import Environment
+from datacats.validate import DATACATS_NAME_RE
 
 from ckan_multisite.site import Site, sites
 from ckan_multisite.router import nginx
@@ -15,7 +16,10 @@ from ckan_multisite.task import create_site_task, remove_site_task
 admin = Admin()
 
 class SiteAddForm(BaseForm):
-    name = TextField('Site name', [validators.Length(min=4, max=25)])
+    name = TextField('Site name', [
+        validators.Length(min=4, max=25),
+        validators.Required(),
+        validators.Regexp(DATACATS_NAME_RE, message='Names must be composed of all lowercase letters and numbers, and start with a lowercase letter.')])
 
 class SiteEditForm(BaseForm):
     pass
