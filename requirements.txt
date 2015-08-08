@@ -6,3 +6,4 @@ celery
 redis
 uwsgi
 datacats
+passlib

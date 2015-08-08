@@ -70,15 +70,21 @@ class DatacatsNginxConfig(object):
 
         :param name: The name of the environment we are working with.
         """
-        with open(_get_site_config_name('default'), 'w') as f:
-            f.write(DEFAULT_TEMPLATE.format(hostname=config.HOSTNAME))
-        if not exists(_get_site_enabled_name('default')):
-            symlink(_get_site_config_name('default'), _get_site_enabled_name('default'))
+        self.update_default()
         self.sites = listdir(SITES_AVAILABLE_PATH)
         self.sites.remove('default')
         self.env_name = name
         # Make sure that Nginx is up to date with the directory.
         self.reload_nginx()
+
+    def update_default(self):
+        """
+        Updates the configuration of the nginx default site.
+        """
+        with open(_get_site_config_name('default'), 'w') as f:
+            f.write(DEFAULT_TEMPLATE.format(hostname=config.HOSTNAME))
+        if not exists(_get_site_enabled_name('default')):
+            symlink(_get_site_config_name('default'), _get_site_enabled_name('default'))
 
     def update_site(self, site):
         """
@@ -134,9 +140,11 @@ class DatacatsNginxConfig(object):
             name = site.name
         else:
             name = site
-        # Remove the site config itself and the enabled symlink
-        remove(_get_site_config_name(name))
-        remove(_get_site_enabled_name(name))
+        if exists(_get_site_enabled_name(name)):
+            remove(_get_site_enabled_name(name))
+        if exists(_get_site_config_name(name)):
+            # Remove the site config itself and the enabled symlink
+            remove(_get_site_config_name(name))
         self.sites.remove(name)
         self.reload_nginx()
 
@@ -166,6 +174,16 @@ class DatacatsNginxConfig(object):
                 self.add_site(site)
 
             print 'Sync successful!'
+    
+    def regenerate_config(self):
+        """
+        Regenerates all configuration files with new settings.
+        """
+        # Avoid a recursive import
+        from ckan_multisite.site import sites
+        self.update_default()
+        for site in sites:
+            self.update_site(site)
 
 
 def _get_site_enabled_name(name):
