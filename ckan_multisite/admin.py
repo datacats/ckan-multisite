@@ -3,6 +3,8 @@ from flask.ext.admin.model import BaseModelView
 from flask.ext.admin.model.fields import ListEditableFieldList
 from flask.ext.admin.form import BaseForm
 
+from flask import url_for, request, redirect
+
 from wtforms import TextField, validators
 
 from datacats.environment import Environment
@@ -12,6 +14,7 @@ from ckan_multisite.site import Site, sites
 from ckan_multisite.router import nginx
 from ckan_multisite.config import MAIN_ENV_NAME
 from ckan_multisite.task import create_site_task, remove_site_task
+from ckan_multisite.pw import check_login_cookie
 
 admin = Admin()
 
@@ -29,6 +32,13 @@ class SiteEditForm(BaseForm):
 class SitesView(BaseModelView):
     def __init__(self):
         super(SitesView, self).__init__(Site)
+
+    def is_accessible(self):
+        return True
+
+    def _handle_view(self, name, **kwargs):
+        if not check_login_cookie():
+            return redirect(url_for('login.login', next=request.url), code=302)
 
     def delete_model(self, site):
         remove_site_task.apply_async(args=(site,))
