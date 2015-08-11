@@ -18,6 +18,8 @@ def create_site_task(site):
         create_environment(environment.name, None, '2.3',
                            False, environment.site_name, False, False,
                            '0.0.0.0', False, True, True)
+        # Serialize the site display name to its datadir
+        site.serialize_display_name()
         nginx.add_site(environment.site_name, environment.port)
         print 'create done!'
     except WebCommandError as e:

@@ -71,11 +71,14 @@ class DatacatsNginxConfig(object):
         :param name: The name of the environment we are working with.
         """
         self.update_default()
-        self.sites = listdir(SITES_AVAILABLE_PATH)
-        self.sites.remove('default')
+        self.sync_with_fs()
         self.env_name = name
         # Make sure that Nginx is up to date with the directory.
         self.reload_nginx()
+
+    def sync_with_fs(self):
+        self.sites = listdir(SITES_AVAILABLE_PATH)
+        self.sites.remove('default')
 
     def update_default(self):
         """
@@ -110,6 +113,7 @@ class DatacatsNginxConfig(object):
         :param port: The port on which the environment is running,
                      defaulting to asking the site object.
         """
+        self.sync_with_fs()
         if port:
             name = site
         else:
@@ -136,6 +140,7 @@ class DatacatsNginxConfig(object):
                      or a Site object, and this function will operate
                      correctly.
         """
+        self.sync_with_fs()
         if hasattr(site, 'name'):
             name = site.name
         else:

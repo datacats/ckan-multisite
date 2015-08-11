@@ -4,6 +4,7 @@
 {{ super() }}
 
 <link href="/static/edit.css" rel="stylesheet">
+
 {% endblock %}
 
 {% block body %}
@@ -27,8 +28,12 @@
     </form>
     <input type="hidden" id="site_name" value="{{ model.name }}"></input>
     <input type="hidden" id="finished_create" value="{{ model.finished_create }}"></input>
+    <p>
+    {{ super() }}
+    </p>
 {% endblock %}
 
 {% block tail %}
+<script>/*$('.btn-large').removeClass('btn-large');*/</script>
 <script src="/static/edit.js"></script>
 {% endblock %}

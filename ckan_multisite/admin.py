@@ -23,9 +23,14 @@ class SiteAddForm(BaseForm):
         validators.Length(min=4, max=25),
         validators.Required(),
         validators.Regexp(DATACATS_NAME_RE, message='Names must be composed of all lowercase letters and numbers, and start with a lowercase letter.')])
+    display_name = TextField('Display Name', [
+        validators.Required()
+        ])
 
 class SiteEditForm(BaseForm):
-    pass
+    display_name = TextField('Display name', [
+        validators.Required()
+        ])
 
 # Auth is handled by HTTP
 # A lot of the class-members are magic things from BaseModelView
@@ -46,12 +51,15 @@ class SitesView(BaseModelView):
 
     def create_model(self, form):
         # Sites start not having their data finished.
-        site = Site(form.name.data, finished_create=False)
+        site = Site(form.name.data, form.display_name.data, finished_create=False)
         result = create_site_task.apply_async(args=(site,))
         site.result = result
         return site
 
     def update_model(self, form, site):
+        if form.display_name.data != site.display_name:
+            site.display_name = form.display_name.data
+            site.serialize_display_name()
         nginx.update_site(site)
 
     def get_list(self, page, sort_field, sort_desc, search, filters):
@@ -98,8 +106,8 @@ class SitesView(BaseModelView):
         else:
             return None
 
-    column_list = ['name']
-    column_label = {'name': 'Name'}
+    column_list = ['name', 'display_name']
+    column_label = {'name': 'Name', 'display_name': 'Display Name'}
     column_sortable_list = column_list
     column_searchable_list = column_list
     column_editable_list = []

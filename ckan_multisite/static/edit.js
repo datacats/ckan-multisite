@@ -73,7 +73,7 @@ $(function () {
             // Remove error class and error if no error
             group.removeClass("error");
             error_label.text("");
-            simple_api_request("change_admin", undefined, undefined, {name: $("#site_name").val(), password: pw.val()});
+            simple_api_request("change_admin", undefined, undefined, undefined, {name: $("#site_name").val(), password: pw.val()});
         }
     }
 
@@ -86,11 +86,11 @@ $(function () {
     });
 
     function enable_buttons() {
-        $('#status_button,#pw,#confirm_pw,#reset_pw_button,#start_button,#stop_button').removeAttr('disabled')
+        $('#status_button,#pw,#confirm_pw,#reset_pw_button,#start_button,#stop_button,#display_name').removeAttr('disabled')
     }
 
     function disable_buttons() {
-        $('#status_button,#pw,#confirm_pw,#reset_pw_button,#start_button,#stop_button').prop('disabled', 'true')
+        $('#status_button,#pw,#confirm_pw,#reset_pw_button,#start_button,#stop_button,#display_name').prop('disabled', 'true')
     }
 
 
