@@ -49,54 +49,17 @@ For more information about using datacats environments, see the
 
 ## Setup
 
-For best results, all of the steps below should ideally be run in a fresh Ubuntu
-virtual machine.
+Recommended specifications for a server running CKAN-Multisite are 
+a fresh Ubuntu 14.04 Server machine. For this supported platform we
+have developed an automated installation script. This script should
+run if you execute the ``run.sh`` script in the root directory of 
+this repository. It will create a virtualenv and install various
+packages that are required for the operation of multisite itself.
 
-Docker must be installed to use this application. This application will not work
-with the versions of Docker from Ubuntu (and the majority of distributions)
-because they are too outdated. Please follow the installation instructions for
-Docker on [the docker site](https://docs.docker.com/installation/).
-
-Before beginning the installation, there are a couple of packages which
-ckan-multisite requires of the system it is running of. To get these installed
-on an Ubuntu machine you can run the following command:
-
-``` sudo apt-get install nginx redis-server ```
-
-
-The default nginx and redis configurations should be fine for local development,
-but it is advisable to edit the default rule for nginx so that it doesn't allow
-access to your administrative interface to anyone. The suggested method of
-authentication method is using HTTP authorization. In addition, you should make
-the redis server's port unavailable to the outside or use a master password.
-
-If you wish to run the redis distribution as a non-privelleged user, there is
-a pre-prepared configuration in the root of the repository. When running the
-redis server run it like: ``redis-server ./redis.conf`` (this is already handled
-in the provided script).
-
-You must also set your site's location in the config.py file.
-
-This application uses setuptools and pip to manage its dependencies. To install
-dependencies and the application itself run the following two commands
-(in a virtualenv):
-
-```
-pip install -r requirements.txt
-python setup.py install
-```
-
-Finally, you must create a datacats environment called 'multisite' which
-will contain the source code for your multisites. To do this, change 
-directory to the place you want to put your source code and run the following
-command (your virtualenv must be activated to use the datacats command):
-
-```
-datacats create multisite
-```
-
-To run the server, run the ``run.sh`` script in the root directory of this
-repository. It accepts an argument ``prod`` which will run it using uwsgi.
+If you wish to do a manual install of CKAN-multisite, the run.sh 
+script is fairly self-documenting and you should be able to read
+through it and get a good idea of what needs to be installed and
+set up.
 
 ## License
 

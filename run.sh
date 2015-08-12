@@ -18,10 +18,11 @@ if [ ! -e ./virtualenv ]; then
         python setup.py develop
         if ! command -v docker > /dev/null 2>&1; then
             wget -qO- https://get.docker.io/ | sh
+            sudo usermod -aG docker $(whoami)
         fi
         sudo chown -R $(whoami): /etc/nginx/
-	sudo usermod -aG docker $(whoami)
-        echo "$(whoami) ALL=NOPASSWD: /usr/sbin/service nginx reload" | sudo tee -a /etc/sudoers
+        sudostr="$(whoami) ALL=NOPASSWD: /usr/sbin/service nginx reload"
+        echo $sudostr | sudo tee -a /etc/sudoers
         # Generate a secret key
         sed "s/#SECRET_.*/SECRET_KEY = '$(python -c 'import os;print os.urandom(20)' | base64)'/" ckan_multisite/config.py.template > ckan_multisite/config.py
         ./manage.sh changepw
@@ -40,7 +41,7 @@ set -xe
 
 if [ ! -e ~/.datacats/multisite ]; then
     datacats pull
-    datacats create multisite
+    datacats create multisite -in
     cp promoted.html multisite/ckanext-multisitetheme/ckanext/multisitetheme/templates/home/snippets
     datacats reload multisite
     echo "You should now be all set up to use CKAN multisite."
