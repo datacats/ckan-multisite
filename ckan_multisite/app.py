@@ -22,7 +22,7 @@ app.register_blueprint(login_bp)
 
 @app.route('/')
 def index():
-    return redirect('/admin')
+    return redirect('/admin/site')
 
 
 if __name__ == '__main__':

@@ -2,6 +2,7 @@ from flask.ext.admin import Admin
 from flask.ext.admin.model import BaseModelView
 from flask.ext.admin.model.fields import ListEditableFieldList
 from flask.ext.admin.form import BaseForm
+from flask.ext.admin import AdminIndexView, expose
 
 from flask import url_for, request, redirect
 
@@ -18,7 +19,14 @@ from ckan_multisite.pw import check_login_cookie
 
 from ckan_multisite import config
 
-admin = Admin()
+class MultisiteHomeView(AdminIndexView):
+    def is_accessible(self):
+        return False
+    @expose('/')
+    def index(self):
+        return redirect('/admin/site')
+
+admin = Admin(index_view=MultisiteHomeView())
 
 class SiteAddForm(BaseForm):
     name = TextField('Site name', [
