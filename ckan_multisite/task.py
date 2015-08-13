@@ -16,7 +16,7 @@ def create_site_task(site):
     try:
         environment = site.environment
         create_environment(environment.name, None, '2.3',
-                           False, environment.site_name, False, False,
+                           True, environment.site_name, False, False,
                            '0.0.0.0', False, True, True)
         # Serialize the site display name to its datadir
         site.serialize_display_name()
