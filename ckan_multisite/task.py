@@ -28,9 +28,13 @@ def create_site_task(site):
 
 @app.task
 def remove_site_task(site):
+    print 'starting purge'
     environment = site.environment
     nginx.remove_site(environment.site_name)
+    print 'site removed'
     environment.stop_ckan()
     environment.stop_supporting_containers()
+    print 'containers stopped'
+    assert environment.site_name in environment.sites, environment.sites + ' ' + environment.site_name
     environment.purge_data([environment.site_name], never_delete=True)
     print 'Purge done!'

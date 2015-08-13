@@ -52,7 +52,6 @@ class Site(object):
 
     def serialize_display_name(self):
         config_path = path_join(SITES_PATH, self.name, MULTISITE_CONFIG_NAME)
-        print 'writing to {}'.format(config_path)
         with open(config_path, 'w') as f:
             f.write(self.display_name)
 
@@ -71,7 +70,6 @@ if 'primary' in __dcats_listing:
 for s in __dcats_listing:
     # Since Flask-admin does things in unicode convert to unicode strings for
     __config_path = path_join(SITES_PATH, s, MULTISITE_CONFIG_NAME)
-    print 'write to {}'.format(__config_path)
     if not exists(__config_path):
         print 'Making up a name for site {}: {}'.format(s, s.capitalize())
         with open(__config_path, 'w') as wf:

@@ -16,6 +16,8 @@ from ckan_multisite.config import MAIN_ENV_NAME
 from ckan_multisite.task import create_site_task, remove_site_task
 from ckan_multisite.pw import check_login_cookie
 
+from ckan_multisite import config
+
 admin = Admin()
 
 class SiteAddForm(BaseForm):
@@ -90,7 +92,6 @@ class SitesView(BaseModelView):
         return column_list
 
     def scaffold_list_form(self, custom_fieldset=ListEditableFieldList, validators=None):
-        # FIXME: This adds a textbox to the list. How do we
         # just have it so that it shows text
         return SiteAddForm
 
