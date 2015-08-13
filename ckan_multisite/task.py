@@ -35,6 +35,6 @@ def remove_site_task(site):
     environment.stop_ckan()
     environment.stop_supporting_containers()
     print 'containers stopped'
-    assert environment.site_name in environment.sites, environment.sites + ' ' + environment.site_name
+    assert environment.site_name in environment.sites, str(environment.sites) + ' ' + environment.site_name
     environment.purge_data([environment.site_name], never_delete=True)
     print 'Purge done!'
