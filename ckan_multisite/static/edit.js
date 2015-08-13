@@ -44,7 +44,7 @@ $(function () {
         simple_api_request("status", function (data) {
             $("#alert_field").text("Default port: " + data.default_port + " Containers Running: " + data.containers_running);
             $("#alert_field").removeClass('hidden');
-            $("body").css("cursor", "auto");
+            $("html").css("cursor", "auto");
         })
     });
 
