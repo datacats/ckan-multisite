@@ -114,7 +114,7 @@ def make_site(environment):
 @datacats_api_command(True, 'name')
 def start_site(environment):
     environment.start_supporting_containers()
-    environment.start_ckan(production=True, address='0.0.0.0')
+    environment.start_ckan(production=True)
 
     return jsonify({'success': 'Multisite environment {} started.'
                     .format(environment.site_name)})

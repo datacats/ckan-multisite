@@ -11,6 +11,14 @@
         {% endtrans %}
       </p>
       <p>
+        {% if g.site_title == "multisite" %}
+          Welcome to a CKAN-multisite environment! As you can see, it's 
+          effectively a template, and you can customize it as much as 
+          you'd like at the sysadmin config panel in the top right (the
+          little hammer).
+        {% endif %}
+      </p>
+      <p>
         This is a new multisite environment. If you are the admin of this
         environment, you can look in the multisite/ckanext-multisitetheme
         directory and edit the templates to customize this site however 
