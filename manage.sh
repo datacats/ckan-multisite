@@ -40,7 +40,7 @@ sub_changepw() {
 }
 
 
-source ../virtualenv/bin/activate
+source virtualenv/bin/activate
  
 subcommand=$1
 case $subcommand in
