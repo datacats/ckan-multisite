@@ -23,8 +23,7 @@ sub_changepw() {
         read -s -p "Please confirm the password: " password_confirm
         echo
     done
-    pw_hash=$(python -c "from ckan_multisite.pw import encrypt; print encrypt('$password')")
-    echo $pw_hash
+    pw_hash=$(python -c "from ckan_multisite.pw import encrypt; print encrypt('$password')" | sed -e 's/[\/&]/\\&/g')
     sed -i "s/.*ADMIN_PW.*/ADMIN_PW= '$pw_hash'/g" ckan_multisite/config.py
 }
 

@@ -18,6 +18,9 @@ HOSTNAME = 'example.com'
 # (rather weak) development value.
 # If you're running from run.sh - ignore this option.
 #SECRET_KEY = 'my_key'
+# This is generated again by the script and is a hash of the admin password.
+# use manage.sh changepw.
+#ADMIN_PW
 # The name of the environment to use for multisite.
 # This must be created using the `datacats` command line tool prior to usage of this
 # application

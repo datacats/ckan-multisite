@@ -24,7 +24,7 @@ if [ ! -e ./virtualenv ]; then
         sudostr="$(whoami) ALL=NOPASSWD: /usr/sbin/service nginx reload"
         echo $sudostr | sudo tee -a /etc/sudoers
         # Generate a secret key
-        sed "s/#SECRET_.*/SECRET_KEY = '$(python -c 'import os;print os.urandom(20)' | base64)'/" ckan_multisite/config.py.template > ckan_multisite/config.py
+        sed "s/#SECRET_.*/SECRET_KEY = '$(python -c 'import os;print os.urandom(20)' | base64 | sed -e 's/[\/&]/\\&/g')'/" ckan_multisite/config.py.template > ckan_multisite/config.py
         ./manage.sh changepw
         "${EDITOR:-nano}" ckan_multisite/config.py
 	echo "Due to an unfortunate limitation in Linux (group addition doesn't take effect until you log out and in), you will need to log out and back in from your system and then run this script again."
