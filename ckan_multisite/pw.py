@@ -4,7 +4,10 @@ from itertools import cycle, izip
 
 from flask import request, session
 
-from ckan_multisite.config import ADMIN_PW, SECRET_KEY
+try: 
+    from ckan_multisite.config import ADMIN_PW, SECRET_KEY
+except ImportError:
+    pass
 
 def encrypt(password):
     return sha256_crypt.encrypt(password)

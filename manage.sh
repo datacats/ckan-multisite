@@ -24,7 +24,19 @@ sub_changepw() {
         echo
     done
     pw_hash=$(python -c "from ckan_multisite.pw import encrypt; print encrypt('$password')" | sed -e 's/[\/&]/\\&/g')
-    sed -i "s/.*ADMIN_PW.*/ADMIN_PW= '$pw_hash'/g" ckan_multisite/config.py
+    if [ $? != 0 ]; then
+        echo 'Python failed. See above output. Could not change pw.'
+        exit 1
+    fi
+    sed -i "s/.*ADMIN_PW.*/ADMIN_PW= '$pw_hash'/gw changes.txt" ckan_multisite/config.py
+    if [ -s changes.txt ]; then
+        echo 'Password changed successfully.'
+        rm changes.txt
+    else
+        echo 'Pattern not found. Cannot change.'
+        rm changes.txt
+        exit 1
+    fi
 }
 
 if [ ! -e virtualenv ]; then
