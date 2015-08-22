@@ -10,7 +10,11 @@ nginx configuration files related to datacats sites.
 """
 
 from ckan_multisite import config
-from ckan_multisite.config import MAIN_ENV_NAME, DEBUG, PORT, GENERATE_NGINX_DEFAULT
+from ckan_multisite.config import MAIN_ENV_NAME, DEBUG, PORT
+try:
+    from ckan_multisite.config import GENERATE_NGINX_DEFAULT
+except ImportError:
+    GENERATE_NGINX_DEFAULT = True
 from os import symlink
 from os.path import exists
 import subprocess
