@@ -37,3 +37,5 @@ PORT = 5000
 # True if the server should run in debugging mode (give tracebacks, etc).
 # THIS MUST BE FALSE ON A PRODUCTION SERVER
 DEBUG = True
+# This says that we should generate the default nginx configuration.
+GENERATE_NGINX_DEFAULT = True

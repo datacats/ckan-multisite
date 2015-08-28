@@ -10,7 +10,7 @@ nginx configuration files related to datacats sites.
 """
 
 from ckan_multisite import config
-from ckan_multisite.config import MAIN_ENV_NAME, DEBUG, PORT
+from ckan_multisite.config import MAIN_ENV_NAME, DEBUG, PORT, GENERATE_NGINX_DEFAULT
 from os import symlink
 from os.path import exists
 import subprocess
@@ -84,10 +84,11 @@ class DatacatsNginxConfig(object):
         """
         Updates the configuration of the nginx default site.
         """
-        with open(_get_site_config_name('default'), 'w') as f:
-            f.write(DEFAULT_TEMPLATE.format(hostname=config.HOSTNAME))
-        if not exists(_get_site_enabled_name('default')):
-            symlink(_get_site_config_name('default'), _get_site_enabled_name('default'))
+        if GENERATE_NGINX_DEFAULT:
+            with open(_get_site_config_name('default'), 'w') as f:
+                f.write(DEFAULT_TEMPLATE.format(hostname=config.HOSTNAME))
+            if not exists(_get_site_enabled_name('default')):
+                symlink(_get_site_config_name('default'), _get_site_enabled_name('default'))
 
     def update_site(self, site):
         """
