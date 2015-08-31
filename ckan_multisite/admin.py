@@ -123,5 +123,7 @@ class SitesView(BaseModelView):
     edit_template = 'edit.html'
     form_columns = column_list
     column_default_sort = 'name'
+    list_template = 'list.html'
+    create_template = 'create.html'
 
 admin.add_view(SitesView())
