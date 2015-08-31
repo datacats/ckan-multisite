@@ -39,12 +39,8 @@ sub_changepw() {
     fi
 }
 
-if [ ! -e virtualenv ]; then
-    echo "Please run the automated setup script (run.sh)."
-    exit 1
-fi
 
-source virtualenv/bin/activate
+source ../virtualenv/bin/activate
  
 subcommand=$1
 case $subcommand in
