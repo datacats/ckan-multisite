@@ -1,0 +1,211 @@
+.hidden {
+    display: none;
+}
+
+.btn-large {
+    padding: 5px;
+    font-size: 12px;
+    -webkit-border-radius: 6px;
+    -moz-border-radius: 6px;
+    border-radius: 6px; 
+}
+
+body {
+	padding-top: 6em;
+	background-color: #fff;
+	font-family: 'Roboto', sans-serif;
+	text-rendering: optimizeLegibility;
+  	-webkit-font-smoothing: antialiased;
+  	-moz-osx-font-smoothing: grayscale;
+  	width:100%;
+}
+
+.navbar {
+	position: fixed;
+	width:100%;
+	top:0;
+	left:0;
+	right:0;
+	color:#fff;
+}
+
+.navbar-inner {
+    min-height: 50px;
+    padding-left:10em;
+    padding-top: 1em;
+    background-color: #3B404E;
+    color:#fff;
+    background-image: none;
+    /*background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#ffffff), to(#f2f2f2));
+    background-image: -webkit-linear-gradient(top, #ffffff, #f2f2f2);
+    background-image: -o-linear-gradient(top, #ffffff, #f2f2f2);
+    background-image: linear-gradient(to bottom, #ffffff, #f2f2f2);*/
+    background-repeat: no-repeat;
+    border: none;
+    -webkit-border-radius: 0px;
+    -moz-border-radius: 0px;
+    border-radius: 0px;
+    -webkit-box-shadow: none;
+    -moz-box-shadow:none;
+    box-shadow: none;
+}
+
+.navbar .brand {
+    display: block;
+    float: left;
+    padding: 10px 20px 10px;
+    margin-left: -20px;
+    font-size: 20px;
+    font-weight: 200;
+    color: #fff;
+    text-shadow: none;
+    border-right:1px solid #e4e4e4;
+}
+
+.navbar .nav > li > a {
+	font-size: 18px;
+	font-weight: 700;
+    float: none;
+    padding: 11px 20px 10px;
+    color: #fff;
+    text-decoration: none;
+    text-shadow: none;
+    transition:all 150ms linear;
+}
+
+.navbar .nav > .active > a:hover {
+	color:#EEF0EA;
+	text-decoration: none;
+    background-color: #3B404E;
+    -webkit-box-shadow: none;
+    -moz-box-shadow: none;
+    box-shadow: none;
+
+}
+
+.navbar .nav > .active > a,  
+.navbar .nav > .active > a:focus {
+    color: #DFBDA3;
+    text-decoration: none;
+    background-color: #3B404E;
+    -webkit-box-shadow: none;
+    -moz-box-shadow: none;
+    box-shadow: none;
+}
+
+.env {
+	font-size: 1.5em;
+	margin: 1.5em 0;
+}
+
+button {
+	background-color: #3B404E;
+	border:none;
+	padding:.5em 1em;
+	margin-right: 1em;
+	border-radius: 5px;
+	font-weight: 700;
+	color:#fff;
+	transition:all 150ms linear;
+}
+
+#start_button {
+	margin-left: 1em;
+}
+
+#start_button:hover {
+	background-color: #667D5F;
+  
+}
+
+#stop_button:hover {
+	background-color: #BD362F;
+
+}
+
+#status_button:hover {
+	background-color: #686A75;
+
+}
+
+#reset_pw_button:hover {
+	background-color: #59857A;
+
+}
+
+.btn-primary {
+    color: #ffffff;
+    text-shadow: none;
+    background-color: #006dcc;
+    background-image: none;
+    background-repeat: no-repeat;
+    border-color: none;
+    filter: progid:none;
+    transition:all 150ms linear;
+}
+.btn {
+    display: inline-block;
+    padding: .5em 1em;
+    margin-bottom: 0;
+    margin-right: .75em;
+    font-size: 14px;
+    font-weight: 700;
+    line-height: 20px;
+    color: #fff;
+    text-align: center;
+    text-shadow: none;
+    vertical-align: middle;
+    cursor: pointer;
+    background-color: #3B404E;
+    background-image: none;
+    background-repeat: no-repeat;
+    border: 1px solid #3B404E;
+    filter: none;
+    box-shadow: none;
+    transition:all 150ms linear;
+}
+
+.nav-tabs {
+	margin-top: 4em;
+}
+
+.nav-tabs > .active > a, 
+.nav-tabs > .active > a:hover, 
+.nav-tabs > .active > a:focus {
+    color: #fff;
+    font-weight: 700;
+    cursor: default;
+    background-color: #58A3BA;
+    border: none;
+    border-bottom:none;
+    padding: .5em 2em;
+
+}
+
+thead {
+    background-color: #58A3BA;
+    color:#fff;
+}
+
+thead a {
+    color:#fff;
+    transition:all 150ms linear;
+}
+
+thead a:hover {
+    text-decoration: none;
+    color:#EDE1B9;
+}
+.nav-tabs > li > a {
+    padding-top: 8px;
+    padding-bottom: 8px;
+    line-height: 20px;
+    border: none;
+    -webkit-border-radius: 4px 4px 0 0;
+    -moz-border-radius: 4px 4px 0 0;
+    border-radius: 4px 4px 0 0;
+}
+
+.fa {
+    margin-left: 5px;
+}
