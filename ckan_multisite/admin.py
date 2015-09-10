@@ -11,7 +11,7 @@ from wtforms import TextField, validators
 from datacats.environment import Environment
 from datacats.validate import DATACATS_NAME_RE
 
-from ckan_multisite.site import Site, sites
+from ckan_multisite.site import Site, get_sites
 from ckan_multisite.router import nginx
 from ckan_multisite.config import MAIN_ENV_NAME
 from ckan_multisite.task import create_site_task, remove_site_task
@@ -57,7 +57,7 @@ class SitesView(BaseModelView):
 
     def delete_model(self, site):
         remove_site_task.apply_async(args=(site,))
-        return sites.remove(site)
+        return True
 
     def create_model(self, form):
         # Sites start not having their data finished.
@@ -73,13 +73,14 @@ class SitesView(BaseModelView):
         nginx.update_site(site)
 
     def get_list(self, page, sort_field, sort_desc, search, filters):
+        print 'HELLO {}'.format(get_sites())
         # `page` is zero-based
         if not sort_field:
             sort_field = 'name'
 
         page_start = page*SitesView.page_size
         page_end = page_start + SitesView.page_size
-        slice_unsorted = sites[page_start:page_end]
+        slice_unsorted = get_sites()[page_start:page_end]
         slice_sorted = sorted(
             slice_unsorted,
             # Magic to get a specific sort field out of a site
@@ -90,7 +91,7 @@ class SitesView(BaseModelView):
 
     def get_one(self, id):
         # ids come in as strs (unicode)
-        return sites[int(id)] if int(id) < len(sites) else None
+        return get_sites()[int(id)] if int(id) < len(get_sites()) else None
 
     def scaffold_form(self):
         return SiteAddForm
@@ -110,6 +111,7 @@ class SitesView(BaseModelView):
         return dict(zip(SitesView.column_sortable_list, SitesView.column_sortable_list))
 
     def get_pk_value(self, model):
+        sites = get_sites()
         if model in sites:
             return sites.index(model)
         else:

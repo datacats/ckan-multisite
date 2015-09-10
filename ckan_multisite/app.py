@@ -14,6 +14,7 @@ from ckan_multisite.config import SECRET_KEY, DEBUG, ADDRESS, PORT
 from ckan_multisite.login import bp as login_bp
 
 app = Flask(__name__)
+app.config['PROPAGATE_EXCEPTIONS'] = True
 app.secret_key = SECRET_KEY
 admin.init_app(app)
 app.register_blueprint(api_bp)

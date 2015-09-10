@@ -11,10 +11,33 @@ from router import nginx
 
 MULTISITE_CONFIG_NAME = '.multisite-config'
 
-sites = []
+SITES_PATH = expanduser(path_join(DATACATS_DIRECTORY, MAIN_ENV_NAME, 'sites'))
+
+def get_sites():
+    if not exists(path_join(DATACATS_DIRECTORY)):
+        mkdir(path_join(DATACATS_DIRECTORY))
+    dcats_listing = listdir(SITES_PATH)
+    sites = []
+    # Primary child isn't mean for them
+    if 'primary' in dcats_listing:
+        dcats_listing.remove('primary')
+    for s in dcats_listing:
+        # Since Flask-admin does things in unicode convert to unicode strings for
+        config_path = path_join(SITES_PATH, s, MULTISITE_CONFIG_NAME)
+        if not exists(config_path):
+            print 'Making up a name for site {}: {}'.format(s, s.capitalize())
+            with open(config_path, 'w') as wf:
+                wf.write(s.capitalize())
+        with open(config_path) as f:
+            sites.append(Site(unicode(s), f.read(), sort=False))
+
+    # Sort the list initially
+    sites.sort()
+
+    return sites
 
 def site_by_name(name):
-    return next(site for site in sites if site.name == name)
+    return next(site for site in get_sites() if site.name == name)
 
 class Site(object):
     def __init__(self, name, display_name, finished_create=True, sort=True):
@@ -34,13 +57,6 @@ class Site(object):
         self.finished_create = finished_create
         self.celery_task = None
 
-        if not sort:
-            sites.append(self)
-        else:
-            # This assumes the `sites` list is already sorted and inserts using an O(log n)
-            # search.
-            insort_left(sites, self)
-
     def __repr__(self):
         return self.name.__repr__()
 
@@ -59,26 +75,3 @@ class Site(object):
     def __gt__(self, site):
         return self.name > site.name
 
-SITES_PATH = expanduser(path_join(DATACATS_DIRECTORY, MAIN_ENV_NAME, 'sites'))
-if not exists(path_join(DATACATS_DIRECTORY)):
-    mkdir(path_join(DATACATS_DIRECTORY))
-# This is just here to initially populate the list
-__dcats_listing = listdir(SITES_PATH)
-# Primary child isn't mean for them
-if 'primary' in __dcats_listing:
-    __dcats_listing.remove('primary')
-for s in __dcats_listing:
-    # Since Flask-admin does things in unicode convert to unicode strings for
-    __config_path = path_join(SITES_PATH, s, MULTISITE_CONFIG_NAME)
-    if not exists(__config_path):
-        print 'Making up a name for site {}: {}'.format(s, s.capitalize())
-        with open(__config_path, 'w') as wf:
-            wf.write(s.capitalize())
-    with open(__config_path) as f:
-        Site(unicode(s), f.read(), sort=False)
-
-# Sort the list initially
-sites.sort()
-
-# the router will attempt to sync the configuration files with us
-nginx.sync_sites(sites)

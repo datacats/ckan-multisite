@@ -158,41 +158,14 @@ class DatacatsNginxConfig(object):
         self.sites.remove(name)
         self.reload_nginx()
 
-    def sync_sites(self, authoritative_sites):
-        """
-        Ensures that our list of sites (and the ones in nginx) is correct
-
-        :param authoritative_sites: The source (probably the datadir) which we
-                                    should consider the source for correct information.
-        """
-        # In this case we actually need syncing
-        if len(authoritative_sites) != len(self.sites):
-            print 'Unbalanced datacats sites and nginx sites... Attempting to sync them.'
-            authoritative_set = set(authoritative_sites)
-            # This is the set that's in the nginx configuration
-            our_set = set(self.sites)
-
-            # These are the sites which should no longer have a config
-            # file because they were purged outside the app
-            outdated_sites = our_set - authoritative_set
-            for site in outdated_sites:
-                self.remove_site(site)
-
-            # These are sites which have been created outside of the app
-            new_sites = authoritative_set - our_set
-            for site in new_sites:
-                self.add_site(site)
-
-            print 'Sync successful!'
-    
     def regenerate_config(self):
         """
         Regenerates all configuration files with new settings.
         """
         # Avoid a recursive import
-        from ckan_multisite.site import sites
+        from ckan_multisite.site import get_sites
         self.update_default()
-        for site in sites:
+        for site in get_sites():
             self.update_site(site)
 
 
