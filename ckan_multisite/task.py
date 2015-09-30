@@ -3,7 +3,7 @@ A collection of tasks for the celeryd
 """
 
 from celery import Celery
-from config import CELERY_BACKEND_URL
+from config import CELERY_BACKEND_URL, HOSTNAME
 from router import nginx
 from site import site_by_name
 from datacats.error import WebCommandError
@@ -17,7 +17,8 @@ def create_site_task(site):
         environment = site.environment
         create_environment(environment.name, None, '2.3',
                            True, environment.site_name, False, False,
-                           '0.0.0.0', False, True, True)
+                           '0.0.0.0', False, True, True,
+                           site_url='{}.{}'.format(environment.site_name, HOSTNAME))
         # Serialize the site display name to its datadir
         site.serialize_display_name()
         nginx.add_site(environment.site_name, environment.port)
